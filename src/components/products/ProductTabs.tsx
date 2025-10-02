@@ -1,0 +1,249 @@
+"use client";
+
+import React, { useState, useMemo } from "react";
+import Image from "next/image";
+import { Swiper, SwiperSlide } from "swiper/react";
+import { Navigation } from "swiper/modules";
+
+// Import Swiper styles
+import "swiper/css";
+import "swiper/css/navigation";
+
+interface Product {
+  id: string;
+  name: string;
+  image: string;
+  price: number;
+  originalPrice?: number;
+  discount?: number;
+  rating: number;
+  quantity: string;
+  category: string;
+  isNew: boolean;
+  isBestseller: boolean;
+}
+
+interface ProductTabsProps {
+  products: Product[];
+  onAddToCart: (productId: string, quantity: number) => void;
+}
+
+const ProductTabs: React.FC<ProductTabsProps> = ({ products, onAddToCart }) => {
+  const [activeTab, setActiveTab] = useState("all");
+  const [quantities, setQuantities] = useState<{ [key: string]: number }>({});
+
+  // Filter products based on active tab
+  const filteredProducts = useMemo(() => {
+    switch (activeTab) {
+      case "new":
+        return products.filter((product) => product.isNew);
+      case "bestseller":
+        return products.filter((product) => product.isBestseller);
+      default:
+        return products;
+    }
+  }, [products, activeTab]);
+
+  const updateQuantity = (productId: string, change: number) => {
+    setQuantities((prev) => {
+      const current = prev[productId] || 1;
+      const newQty = Math.max(1, current + change);
+      return { ...prev, [productId]: newQty };
+    });
+  };
+
+  const getQuantity = (productId: string) => quantities[productId] || 1;
+
+  const handleAddToCart = (productId: string) => {
+    const quantity = getQuantity(productId);
+    onAddToCart(productId, quantity);
+  };
+
+  const ProductCard = ({ product }: { product: Product }) => (
+    <div className="product-item" data-product-id={product.id}>
+      {product.discount && (
+        <span className="badge bg-success position-absolute m-3">
+          -{product.discount}%
+        </span>
+      )}
+
+      <button className="btn-wishlist">
+        <svg width="24" height="24">
+          <use xlinkHref="#heart"></use>
+        </svg>
+      </button>
+
+      <figure>
+        <Image
+          src={`/${product.image}`}
+          alt={product.name}
+          width={200}
+          height={200}
+          className="tab-image"
+        />
+      </figure>
+
+      <h3>{product.name}</h3>
+      <span className="qty">{product.quantity}</span>
+      <div className="rating">
+        <svg width="24" height="24" className="text-primary">
+          <use xlinkHref="#star-solid"></use>
+        </svg>
+        {product.rating}
+      </div>
+      <span className="price">₹{product.price.toLocaleString()}</span>
+
+      <div className="d-flex align-items-center justify-content-between">
+        <div className="input-group product-qty">
+          <span className="input-group-btn">
+            <button
+              type="button"
+              className="quantity-left-minus btn btn-danger btn-number"
+              data-type="minus"
+              onClick={() => updateQuantity(product.id, -1)}
+            >
+              <svg width="16" height="16">
+                <use xlinkHref="#minus"></use>
+              </svg>
+            </button>
+          </span>
+          <input
+            type="text"
+            className="form-control input-number quantity"
+            value={getQuantity(product.id)}
+            min="1"
+            readOnly
+          />
+          <span className="input-group-btn">
+            <button
+              type="button"
+              className="quantity-right-plus btn btn-success btn-number"
+              data-type="plus"
+              onClick={() => updateQuantity(product.id, 1)}
+            >
+              <svg width="16" height="16">
+                <use xlinkHref="#plus"></use>
+              </svg>
+            </button>
+          </span>
+        </div>
+        <a
+          href="#"
+          className="nav-link add-to-cart"
+          onClick={(e) => {
+            e.preventDefault();
+            handleAddToCart(product.id);
+          }}
+        >
+          Add to Cart <iconify-icon icon="uil:shopping-cart"></iconify-icon>
+        </a>
+      </div>
+    </div>
+  );
+
+  return (
+    <div className="row">
+      <div className="col-md-12">
+        <div className="bootstrap-tabs product-tabs">
+          <div className="tabs-header d-flex justify-content-between border-bottom my-5">
+            <h3 className="fw-bold font-nunito text-black">
+              Trending Products
+            </h3>
+            <nav>
+              <div className="nav nav-tabs" role="tablist">
+                <button
+                  className={`nav-link text-uppercase fs-6 ${activeTab === "all" ? "active" : ""}`}
+                  onClick={() => setActiveTab("all")}
+                >
+                  All
+                </button>
+                <button
+                  className={`nav-link text-uppercase fs-6 ${activeTab === "new" ? "active" : ""}`}
+                  onClick={() => setActiveTab("new")}
+                >
+                  New Arrival
+                </button>
+                <button
+                  className={`nav-link text-uppercase fs-6 ${activeTab === "bestseller" ? "active" : ""}`}
+                  onClick={() => setActiveTab("bestseller")}
+                >
+                  Bestseller
+                </button>
+              </div>
+            </nav>
+          </div>
+
+          <div className="tab-content">
+            <div className="tab-pane fade show active">
+              {/* Navigation Buttons */}
+              <div className="swiper-buttons d-flex gap-2 justify-content-end mb-3">
+                <button
+                  type="button"
+                  className="swiper-prev product-carousel-prev btn btn-outline-primary"
+                  aria-label="Previous"
+                >
+                  ❮
+                </button>
+                <button
+                  type="button"
+                  className="swiper-next product-carousel-next btn btn-outline-primary"
+                  aria-label="Next"
+                >
+                  ❯
+                </button>
+              </div>
+
+              {/* Swiper Carousel */}
+              <div className="product-carousel">
+                <Swiper
+                  modules={[Navigation]}
+                  slidesPerView={4}
+                  spaceBetween={25}
+                  speed={500}
+                  loop={false}
+                  grabCursor={true}
+                  watchOverflow={true}
+                  navigation={{
+                    nextEl: ".product-carousel-next",
+                    prevEl: ".product-carousel-prev",
+                    disabledClass: "swiper-button-disabled",
+                  }}
+                  breakpoints={{
+                    0: {
+                      slidesPerView: 1,
+                      spaceBetween: 15,
+                    },
+                    576: {
+                      slidesPerView: 2,
+                      spaceBetween: 15,
+                    },
+                    768: {
+                      slidesPerView: 2,
+                      spaceBetween: 20,
+                    },
+                    991: {
+                      slidesPerView: 3,
+                      spaceBetween: 20,
+                    },
+                    1200: {
+                      slidesPerView: 4,
+                      spaceBetween: 25,
+                    },
+                  }}
+                >
+                  {filteredProducts.map((product) => (
+                    <SwiperSlide key={product.id}>
+                      <ProductCard product={product} />
+                    </SwiperSlide>
+                  ))}
+                </Swiper>
+              </div>
+            </div>
+          </div>
+        </div>
+      </div>
+    </div>
+  );
+};
+
+export default ProductTabs;

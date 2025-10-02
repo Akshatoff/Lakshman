@@ -1,0 +1,34 @@
+{
+  "name": "laksh-man-next-js",
+  "version": "0.1.0",
+  "private": true,
+  "scripts": {
+    "dev": "next dev",
+    "build": "next build",
+    "start": "next start",
+    "lint": "next lint --max-warnings=0",
+    "type-check": "tsc -p tsconfig.json --noEmit"
+  },
+  "dependencies": {
+    "bootstrap": "^5.3.8",
+    "next": "15.5.4",
+    "react": "19.1.0",
+    "react-dom": "19.1.0",
+    "swiper": "^12.0.2"
+  },
+  "devDependencies": {
+    "@eslint/eslintrc": "^3",
+    "@types/node": "^20",
+    "@types/prop-types": "^15.7.15",
+    "@types/react": "^19",
+    "@types/react-dom": "^19",
+    "@types/react-transition-group": "^4.4.12",
+    "@types/warning": "^3.0.3",
+    "eslint": "^9",
+    "eslint-config-next": "15.5.4",
+    "typescript": "^5"
+  },
+  "engines": {
+    "node": ">=18.18.0"
+  }
+}
