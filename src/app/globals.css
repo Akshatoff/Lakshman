@@ -571,14 +571,33 @@ h6 {
   box-shadow: 0px 5px 22px rgba(0, 0, 0, 0.04);
   border-radius: 16px;
   margin-bottom: 30px;
-  transition: box-shadow 0.3s ease-out;
+  transition: all 0.3s ease-out;
   display: flex;
   flex-direction: column;
-  width: 100%;
   height: 100%;
+  justify-content: space-between;
 }
 .product-item:hover {
   box-shadow: 0px 21px 44px rgba(0, 0, 0, 0.08);
+  transform: translateY(-5px);
+}
+
+.product-item a {
+  text-decoration: none;
+  color: inherit;
+  cursor: pointer;
+}
+
+.product-item a:hover h3 {
+  color: var(--bs-primary);
+}
+
+.product-item figure {
+  transition: transform 0.3s ease;
+}
+
+.product-item:hover figure {
+  transform: scale(1.05);
 }
 .product-item h3 {
   display: block;

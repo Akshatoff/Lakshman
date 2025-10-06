@@ -2,6 +2,7 @@
 
 import React, { useState, useMemo } from "react";
 import Image from "next/image";
+import Link from "next/link";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation } from "swiper/modules";
 
@@ -73,17 +74,19 @@ const ProductTabs: React.FC<ProductTabsProps> = ({ products, onAddToCart }) => {
         </svg>
       </button>
 
-      <figure>
-        <Image
-          src={`/${product.image}`}
-          alt={product.name}
-          width={200}
-          height={200}
-          className="tab-image"
-        />
-      </figure>
+      <Link href={`/product/${product.id}`} className="text-decoration-none">
+        <figure>
+          <Image
+            src={product.image}
+            alt={product.name}
+            width={200}
+            height={200}
+            className="tab-image"
+          />
+        </figure>
 
-      <h3>{product.name}</h3>
+        <h3>{product.name}</h3>
+      </Link>
       <span className="qty">{product.quantity}</span>
       <div className="rating">
         <svg width="24" height="24" className="text-primary">
@@ -135,7 +138,14 @@ const ProductTabs: React.FC<ProductTabsProps> = ({ products, onAddToCart }) => {
             handleAddToCart(product.id);
           }}
         >
-          Add to Cart <iconify-icon icon="uil:shopping-cart"></iconify-icon>
+          Add to Cart{" "}
+          <svg
+            width="20"
+            height="20"
+            style={{ display: "inline-block", verticalAlign: "middle" }}
+          >
+            <use xlinkHref="#cart"></use>
+          </svg>
         </a>
       </div>
     </div>

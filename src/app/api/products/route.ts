@@ -1,11 +1,9 @@
 import { NextRequest, NextResponse } from "next/server";
-import fs from "fs";
-import path from "path";
+import { PrismaClient } from "@/generated/prisma";
 
-export const runtime = "nodejs";
+const prisma = new PrismaClient();
 
 // GET /api/products - Fetch all products
-
 export async function GET(request: NextRequest) {
   try {
     const { searchParams } = new URL(request.url);
@@ -14,46 +12,76 @@ export async function GET(request: NextRequest) {
     const limit = searchParams.get("limit");
     const offset = searchParams.get("offset");
 
-    // Read products from JSON file
-    const filePath = path.join(
-      process.cwd(),
-      "public",
-      "data",
-      "products.json",
-    );
-    const fileContents = fs.readFileSync(filePath, "utf8");
-    const data = JSON.parse(fileContents);
+    // Build where clause
+    const where: any = {};
 
-    let products = data.products.all;
-
-    // Filter by category
     if (category && category !== "all") {
-      products = products.filter(
-        (product: any) => product.category === category,
-      );
+      where.category = category;
     }
 
-    // Filter by search query
     if (search) {
-      const searchLower = search.toLowerCase();
-      products = products.filter(
-        (product: any) =>
-          product.name.toLowerCase().includes(searchLower) ||
-          product.category.toLowerCase().includes(searchLower),
-      );
+      where.OR = [
+        { name: { contains: search, mode: "insensitive" } },
+        { title: { contains: search, mode: "insensitive" } },
+        { category: { contains: search, mode: "insensitive" } },
+      ];
     }
 
-    // Apply pagination
-    const startIndex = offset ? parseInt(offset) : 0;
-    const endIndex = limit ? startIndex + parseInt(limit) : products.length;
-    const paginatedProducts = products.slice(startIndex, endIndex);
+    // Get total count
+    const total = await prisma.product.count({ where });
+
+    // Fetch products with pagination
+    const products = await prisma.product.findMany({
+      where,
+      skip: offset ? parseInt(offset) : 0,
+      take: limit ? parseInt(limit) : undefined,
+      orderBy: {
+        createdAt: "desc",
+      },
+    });
+
+    // Fetch categories
+    const categories = await prisma.category.findMany({
+      where: { isActive: true },
+      select: {
+        id: true,
+        name: true,
+        slug: true,
+        image: true,
+      },
+    });
+
+    // Transform products to match frontend format
+    const transformedProducts = products.map((product) => ({
+      id: product.id.toString(),
+      name: product.name || product.title,
+      image: product.image || "",
+      price: product.priceCents / 100,
+      originalPrice: product.originalPriceCents
+        ? product.originalPriceCents / 100
+        : null,
+      discount: product.discount,
+      rating: product.rating,
+      quantity: "1 Unit",
+      category: product.category,
+      isNew: product.isNew,
+      isBestseller: product.isBestseller,
+    }));
+
+    // Transform categories to match frontend format
+    const transformedCategories = categories.map((cat) => ({
+      id: cat.slug,
+      name: cat.name,
+      image: cat.image || "/images/default-category.png",
+      link: `#products`,
+    }));
 
     return NextResponse.json({
       success: true,
       data: {
-        products: paginatedProducts,
-        total: products.length,
-        categories: data.categories,
+        products: transformedProducts,
+        total,
+        categories: transformedCategories,
       },
     });
   } catch (error) {
@@ -71,7 +99,7 @@ export async function POST(request: NextRequest) {
     const body = await request.json();
 
     // Validate required fields
-    const requiredFields = ["name", "price", "category", "quantity", "image"];
+    const requiredFields = ["name", "price", "category", "image"];
     const missingFields = requiredFields.filter((field) => !body[field]);
 
     if (missingFields.length > 0) {
@@ -84,49 +112,66 @@ export async function POST(request: NextRequest) {
       );
     }
 
-    // Read current products
-    const filePath = path.join(
-      process.cwd(),
-      "public",
-      "data",
-      "products.json",
-    );
-    const fileContents = fs.readFileSync(filePath, "utf8");
-    const data = JSON.parse(fileContents);
+    // Generate slug from name
+    const slug =
+      body.slug ||
+      body.name
+        .toLowerCase()
+        .replace(/[^a-z0-9]+/g, "-")
+        .replace(/(^-|-$)/g, "");
 
-    // Generate new product ID
-    const newId = `product-${Date.now()}-${Math.random().toString(36).substr(2, 9)}`;
+    // Create new product in database
+    const newProduct = await prisma.product.create({
+      data: {
+        title: body.name,
+        name: body.name,
+        slug: `${slug}-${Date.now()}`,
+        description: body.description || "No description available",
+        priceCents: Math.round(parseFloat(body.price) * 100),
+        originalPriceCents: body.originalPrice
+          ? Math.round(parseFloat(body.originalPrice) * 100)
+          : null,
+        discount: body.discount ? parseInt(body.discount) : null,
+        images: body.images || [body.image],
+        image: body.image,
+        inventory: body.inventory ? parseInt(body.inventory) : 100,
+        category: body.category,
+        rating: body.rating ? parseFloat(body.rating) : 4.0,
+        isNew: body.isNew || false,
+        isBestseller: body.isBestseller || false,
+        isFeatured: body.isFeatured || false,
+      },
+    });
 
-    // Create new product object
-    const newProduct = {
-      id: newId,
-      name: body.name,
-      image: body.image,
-      price: parseFloat(body.price),
-      originalPrice: body.originalPrice ? parseFloat(body.originalPrice) : null,
-      discount: body.discount ? parseInt(body.discount) : null,
-      rating: body.rating || 4.0,
-      quantity: body.quantity,
-      category: body.category,
-      isNew: body.isNew || false,
-      isBestseller: body.isBestseller || false,
+    // Transform to frontend format
+    const transformedProduct = {
+      id: newProduct.id.toString(),
+      name: newProduct.name || newProduct.title,
+      image: newProduct.image || "",
+      price: newProduct.priceCents / 100,
+      originalPrice: newProduct.originalPriceCents
+        ? newProduct.originalPriceCents / 100
+        : null,
+      discount: newProduct.discount,
+      rating: newProduct.rating,
+      quantity: "1 Unit",
+      category: newProduct.category,
+      isNew: newProduct.isNew,
+      isBestseller: newProduct.isBestseller,
     };
-
-    // Add to products array
-    data.products.all.push(newProduct);
-
-    // Write back to file
-    fs.writeFileSync(filePath, JSON.stringify(data, null, 2));
 
     return NextResponse.json({
       success: true,
       message: "Product added successfully",
-      data: newProduct,
+      data: transformedProduct,
     });
-  } catch (error) {
+  } catch (error: any) {
     console.error("Error adding product:", error);
     return NextResponse.json(
-      { success: false, error: "Failed to add product" },
+      {
+        success: false,
+        error: error.message || "Failed to add product",
+      },
       { status: 500 },
     );
   }
@@ -144,22 +189,14 @@ export async function PUT(request: NextRequest) {
       );
     }
 
-    // Read current products
-    const filePath = path.join(
-      process.cwd(),
-      "public",
-      "data",
-      "products.json",
-    );
-    const fileContents = fs.readFileSync(filePath, "utf8");
-    const data = JSON.parse(fileContents);
+    const productId = parseInt(body.id);
 
-    // Find product index
-    const productIndex = data.products.all.findIndex(
-      (product: any) => product.id === body.id,
-    );
+    // Check if product exists
+    const existingProduct = await prisma.product.findUnique({
+      where: { id: productId },
+    });
 
-    if (productIndex === -1) {
+    if (!existingProduct) {
       return NextResponse.json(
         { success: false, error: "Product not found" },
         { status: 404 },
@@ -167,35 +204,68 @@ export async function PUT(request: NextRequest) {
     }
 
     // Update product
-    const updatedProduct = {
-      ...data.products.all[productIndex],
-      ...body,
-      price: body.price
-        ? parseFloat(body.price)
-        : data.products.all[productIndex].price,
-      originalPrice: body.originalPrice
-        ? parseFloat(body.originalPrice)
-        : data.products.all[productIndex].originalPrice,
-      discount: body.discount
-        ? parseInt(body.discount)
-        : data.products.all[productIndex].discount,
-      rating: body.rating || data.products.all[productIndex].rating,
+    const updateData: any = {};
+
+    if (body.name) {
+      updateData.name = body.name;
+      updateData.title = body.name;
+    }
+    if (body.description) updateData.description = body.description;
+    if (body.price)
+      updateData.priceCents = Math.round(parseFloat(body.price) * 100);
+    if (body.originalPrice)
+      updateData.originalPriceCents = Math.round(
+        parseFloat(body.originalPrice) * 100,
+      );
+    if (body.discount !== undefined)
+      updateData.discount = parseInt(body.discount);
+    if (body.image) {
+      updateData.image = body.image;
+      updateData.images = body.images || [body.image];
+    }
+    if (body.inventory !== undefined)
+      updateData.inventory = parseInt(body.inventory);
+    if (body.category) updateData.category = body.category;
+    if (body.rating !== undefined) updateData.rating = parseFloat(body.rating);
+    if (body.isNew !== undefined) updateData.isNew = body.isNew;
+    if (body.isBestseller !== undefined)
+      updateData.isBestseller = body.isBestseller;
+    if (body.isFeatured !== undefined) updateData.isFeatured = body.isFeatured;
+
+    const updatedProduct = await prisma.product.update({
+      where: { id: productId },
+      data: updateData,
+    });
+
+    // Transform to frontend format
+    const transformedProduct = {
+      id: updatedProduct.id.toString(),
+      name: updatedProduct.name || updatedProduct.title,
+      image: updatedProduct.image || "",
+      price: updatedProduct.priceCents / 100,
+      originalPrice: updatedProduct.originalPriceCents
+        ? updatedProduct.originalPriceCents / 100
+        : null,
+      discount: updatedProduct.discount,
+      rating: updatedProduct.rating,
+      quantity: "1 Unit",
+      category: updatedProduct.category,
+      isNew: updatedProduct.isNew,
+      isBestseller: updatedProduct.isBestseller,
     };
-
-    data.products.all[productIndex] = updatedProduct;
-
-    // Write back to file
-    fs.writeFileSync(filePath, JSON.stringify(data, null, 2));
 
     return NextResponse.json({
       success: true,
       message: "Product updated successfully",
-      data: updatedProduct,
+      data: transformedProduct,
     });
-  } catch (error) {
+  } catch (error: any) {
     console.error("Error updating product:", error);
     return NextResponse.json(
-      { success: false, error: "Failed to update product" },
+      {
+        success: false,
+        error: error.message || "Failed to update product",
+      },
       { status: 500 },
     );
   }
@@ -214,43 +284,54 @@ export async function DELETE(request: NextRequest) {
       );
     }
 
-    // Read current products
-    const filePath = path.join(
-      process.cwd(),
-      "public",
-      "data",
-      "products.json",
-    );
-    const fileContents = fs.readFileSync(filePath, "utf8");
-    const data = JSON.parse(fileContents);
+    const id = parseInt(productId);
 
-    // Find product index
-    const productIndex = data.products.all.findIndex(
-      (product: any) => product.id === productId,
-    );
+    // Check if product exists
+    const existingProduct = await prisma.product.findUnique({
+      where: { id },
+    });
 
-    if (productIndex === -1) {
+    if (!existingProduct) {
       return NextResponse.json(
         { success: false, error: "Product not found" },
         { status: 404 },
       );
     }
 
-    // Remove product
-    const deletedProduct = data.products.all.splice(productIndex, 1)[0];
+    // Delete product
+    const deletedProduct = await prisma.product.delete({
+      where: { id },
+    });
 
-    // Write back to file
-    fs.writeFileSync(filePath, JSON.stringify(data, null, 2));
+    // Transform to frontend format
+    const transformedProduct = {
+      id: deletedProduct.id.toString(),
+      name: deletedProduct.name || deletedProduct.title,
+      image: deletedProduct.image || "",
+      price: deletedProduct.priceCents / 100,
+      originalPrice: deletedProduct.originalPriceCents
+        ? deletedProduct.originalPriceCents / 100
+        : null,
+      discount: deletedProduct.discount,
+      rating: deletedProduct.rating,
+      quantity: "1 Unit",
+      category: deletedProduct.category,
+      isNew: deletedProduct.isNew,
+      isBestseller: deletedProduct.isBestseller,
+    };
 
     return NextResponse.json({
       success: true,
       message: "Product deleted successfully",
-      data: deletedProduct,
+      data: transformedProduct,
     });
-  } catch (error) {
+  } catch (error: any) {
     console.error("Error deleting product:", error);
     return NextResponse.json(
-      { success: false, error: "Failed to delete product" },
+      {
+        success: false,
+        error: error.message || "Failed to delete product",
+      },
       { status: 500 },
     );
   }

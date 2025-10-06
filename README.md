@@ -1,6 +1,11 @@
 # Laksh-man - Premium Furniture & Home Decor E-commerce
 
-A modern, responsive e-commerce website built with Next.js 14, featuring a complete furniture and home decor shopping experience with admin management capabilities.
+A modern, responsive e-commerce website built with Next.js 14, featuring a complete furniture and home decor shopping experience with admin management capabilities. Now powered by Supabase PostgreSQL database and Cloudinary CDN for images.
+
+> **✨ Recently Upgraded**: 
+> - Migrated from JSONBin to Supabase PostgreSQL database
+> - Integrated Cloudinary CDN for image hosting
+> - **NEW: Complete Supabase Authentication System** for user accounts, cart persistence, wishlists, and more!
 
 ## 🚀 Features
 
@@ -13,33 +18,68 @@ A modern, responsive e-commerce website built with Next.js 14, featuring a compl
 - **Newsletter Signup** - Email subscription with discount offers
 - **Animated UI** - Smooth animations using AOS (Animate On Scroll)
 - **Modern UX** - Bootstrap 5 components with custom styling
+- **User Authentication** - Complete login/signup system with Supabase
+- **User Accounts** - Profile management and personalized experience
 
 ### Backend Features
 - **Admin Dashboard** - Complete product and category management
 - **REST API** - Full CRUD operations for products
-- **JSON Data Storage** - File-based data management
-- **Image Management** - Support for product images
+- **Supabase Authentication** - Secure user authentication and session management
+- **Database Storage** - PostgreSQL with Prisma ORM
+- **Image Management** - Cloudinary CDN for product images
 - **Real-time Updates** - Dynamic content loading
+- **Protected Routes** - Middleware-based authentication for secure pages
+
+### Authentication Features
+- **User Registration** - Sign up with email and password
+- **User Login** - Secure login with session management
+- **Password Reset** - Email-based password recovery
+- **Email Verification** - Optional email confirmation
+- **Profile Management** - Update user information
+- **Session Persistence** - Stay logged in across browser sessions
+- **Protected Routes** - Automatic redirect for unauthorized access
+- **Cart Persistence** - Save cart items to database (ready to implement)
+- **Wishlist Support** - User-specific wishlists (ready to implement)
+- **Order History** - Track past orders (ready to implement)
 
 ### Technical Features
-- **Next.js 14** - App Router with TypeScript
+- **Next.js 15** - App Router with TypeScript
+- **Supabase PostgreSQL** - Enterprise-grade database with Prisma ORM
+- **Supabase Auth** - Secure authentication with SSR support
+- **Cloudinary CDN** - Professional image hosting and optimization
 - **Server-Side Rendering** - Optimized performance and SEO
-- **API Routes** - Built-in backend functionality
+- **API Routes** - RESTful API with full CRUD operations
+- **Protected API Routes** - Authentication middleware for secure endpoints
 - **Component Architecture** - Modular and reusable components
 - **Bootstrap 5** - Responsive CSS framework
 - **Custom CSS** - Tailored styling preserving original design
+- **TypeScript** - Full type safety throughout the application
 
 ## 🛠️ Technologies Used
 
-- **Framework**: Next.js 14 (App Router)
+- **Framework**: Next.js 15 (App Router)
 - **Language**: TypeScript
+- **Database**: Supabase PostgreSQL
+- **ORM**: Prisma Client
+- **Authentication**: Supabase Auth (@supabase/ssr)
+- **Image Hosting**: Cloudinary CDN
 - **Styling**: Bootstrap 5 + Custom CSS
 - **Animations**: AOS (Animate On Scroll)
 - **Carousel**: Swiper.js
 - **Icons**: Iconify
-- **Image Optimization**: Next.js Image component
-- **Data Storage**: JSON files
+- **Image Optimization**: Next.js Image component + Cloudinary
 - **Development**: ESLint, PostCSS, Autoprefixer
+</parameter>
+
+<old_text line=66>
+3. **Configure environment variables**
+   
+   Update `.env.local` with your Cloudinary credentials:
+   ```env
+   NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME="your_cloud_name"
+   CLOUDINARY_API_KEY="your_api_key"
+   CLOUDINARY_API_SECRET="your_api_secret"
+   ```
 
 ## 📦 Installation
 
@@ -52,19 +92,50 @@ A modern, responsive e-commerce website built with Next.js 14, featuring a compl
 2. **Install dependencies**
    ```bash
    npm install
-   # or
-   yarn install
    ```
 
-3. **Run the development server**
+3. **Configure environment variables**
+   
+   Update `.env.local` with your Cloudinary credentials:
+   ```env
+   NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME="your_cloud_name"
+   CLOUDINARY_API_KEY="your_api_key"
+   CLOUDINARY_API_SECRET="your_api_secret"
+   ```
+
+4. **Setup database**
+   ```bash
+   # Generate Prisma client
+   npx prisma generate
+   
+   # Seed database with sample products
+   npx prisma db seed
+   ```
+
+5. **Run the development server**
    ```bash
    npm run dev
-   # or
-   yarn dev
    ```
 
-4. **Open your browser**
+6. **Configure Supabase Authentication**
+   
+   Follow the detailed setup in `SUPABASE_AUTH_SETUP.md`:
+   - Enable email authentication in Supabase dashboard
+   - Configure redirect URLs
+   - Create database trigger for user profiles
+   
+7. **Open your browser**
    Navigate to [http://localhost:3000](http://localhost:3000)
+
+### 📚 Documentation Guides
+- **QUICKSTART.md** - Get started in 5 minutes
+- **SETUP_INSTRUCTIONS.md** - Detailed setup guide
+- **API_GUIDE.md** - Complete API documentation
+- **MIGRATION_SUMMARY.md** - Database migration details
+- **SUPABASE_AUTH_SETUP.md** - Authentication setup guide
+- **AUTH_QUICK_REFERENCE.md** - Authentication code snippets
+- **AUTH_TESTING_CHECKLIST.md** - Complete testing checklist
+- **AUTH_IMPLEMENTATION_SUMMARY.md** - Auth system overview
 
 ## 🏗️ Project Structure
 
@@ -86,9 +157,13 @@ src/
 │   ├── newsletter/             # Newsletter components
 │   ├── products/               # Product-related components
 │   └── search/                 # Search components
+prisma/
+├── schema.prisma               # Database schema
+├── seed.ts                     # Database seeding
+└── migrations/                 # Database migrations
 public/
 ├── data/
-│   └── products.json           # Product and category data
+│   └── products.json           # Legacy data (kept for reference)
 └── images/                     # Static images
 ```
 
@@ -107,26 +182,29 @@ public/
 
 ### Admin Panel
 - **AdminDashboard**: Complete product management interface
-- **Product CRUD**: Add, edit, delete products
-- **Data Export**: Download product data as JSON
+- **Product CRUD**: Add, edit, delete products with database persistence
+- **Image Upload**: Upload images directly to Cloudinary CDN
+- **Database Updates**: Sync and refresh data from Supabase
 
 ## 🔧 API Endpoints
 
 ### Products API (`/api/products`)
-- `GET` - Fetch all products with filtering
-- `POST` - Add new product
-- `PUT` - Update existing product
-- `DELETE` - Remove product
+All endpoints now use Supabase PostgreSQL database with Prisma ORM.
+
+- `GET` - Fetch all products with filtering, search, and pagination
+- `POST` - Add new product to database
+- `PUT` - Update existing product in database
+- `DELETE` - Remove product from database
 
 #### Query Parameters
 - `category` - Filter by category
-- `search` - Search in product names
+- `search` - Search in product names and descriptions
 - `limit` - Limit number of results
 - `offset` - Pagination offset
 
 #### Example Usage
 ```javascript
-// Fetch all products
+// Fetch all products from database
 const response = await fetch('/api/products');
 
 // Filter by category
@@ -134,36 +212,54 @@ const response = await fetch('/api/products?category=sofas');
 
 // Search products
 const response = await fetch('/api/products?search=chair');
+
+// Pagination
+const response = await fetch('/api/products?limit=10&offset=0');
 ```
 
-## 📊 Data Structure
+For detailed API documentation, see **API_GUIDE.md**.
 
-### Product Schema
-```json
-{
-  "id": "string",
-  "name": "string",
-  "image": "string (URL)",
-  "price": "number",
-  "originalPrice": "number (optional)",
-  "discount": "number (optional)",
-  "rating": "number",
-  "quantity": "string",
-  "category": "string",
-  "isNew": "boolean",
-  "isBestseller": "boolean"
+## 📊 Database Structure
+
+### Product Model (Prisma)
+```prisma
+model Product {
+  id                  Int       @id @default(autoincrement())
+  title               String
+  slug                String    @unique
+  name                String?
+  description         String
+  priceCents          Int
+  originalPriceCents  Int?
+  discount            Int?
+  images              Json
+  image               String?
+  inventory           Int
+  category            String
+  rating              Float     @default(4.0)
+  isNew               Boolean   @default(false)
+  isBestseller        Boolean   @default(false)
+  isFeatured          Boolean   @default(false)
+  createdAt           DateTime  @default(now())
+  updatedAt           DateTime  @updatedAt
 }
 ```
 
-### Category Schema
-```json
-{
-  "id": "string",
-  "name": "string",
-  "image": "string (URL)",
-  "link": "string"
+### Category Model (Prisma)
+```prisma
+model Category {
+  id          Int      @id @default(autoincrement())
+  name        String   @unique
+  slug        String   @unique
+  description String?
+  image       String?
+  isActive    Boolean  @default(true)
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
 }
 ```
+
+**Note**: The database schema includes additional models for Users, Orders, Reviews, Cart, Wishlist, and Addresses. See `prisma/schema.prisma` for the complete schema.
 
 ## 🎨 Styling
 
@@ -200,17 +296,36 @@ NEXT_PUBLIC_GA_TRACKING_ID=your-ga-tracking-id
 - **AWS Amplify**
 - **Self-hosted**
 
-## 🔐 Admin Access
+## 🔐 Authentication & Access
 
-Access the admin dashboard at `/admin/dashboard`
+### User Authentication
+
+- **Sign Up**: `/auth/signup` - Create new account
+- **Sign In**: `/auth/login` - Login to existing account
+- **Protected Routes**: Automatically redirect to login if not authenticated
+
+### Admin Access
+
+Access the admin dashboard at `/admin/dashboard` (requires authentication)
 
 ### Admin Features
-- View all products in a table format
-- Add new products with form validation
-- Edit existing products
+- View all products from database in a table format
+- Add new products with image upload to Cloudinary
+- Edit existing products with database persistence
 - Delete products with confirmation
-- Export product data as JSON
+- Update database with latest data from Supabase
+- Real-time image preview before upload
 - Category management
+- Product statistics and quick stats
+
+### Image Upload
+- Drag and drop or browse to select images
+- Automatic upload to Cloudinary CDN
+- Image preview before submission
+- Secure HTTPS URLs
+- Automatic image optimization
+
+**✅ Security**: Authentication system is now implemented! Admin routes are protected by middleware.
 
 ## 📱 Responsive Design
 
@@ -236,6 +351,10 @@ The website is fully responsive with breakpoints:
 - `npm run build` - Build for production
 - `npm run start` - Start production server
 - `npm run lint` - Run ESLint
+- `npx prisma generate` - Generate Prisma client
+- `npx prisma db seed` - Seed database with sample data
+- `npx prisma studio` - Open database GUI
+- `npx prisma migrate dev` - Create/apply migrations
 
 ### Code Quality
 - TypeScript for type safety
@@ -250,6 +369,44 @@ The website is fully responsive with breakpoints:
 3. Make your changes
 4. Add tests if applicable
 5. Submit a pull request
+
+## 🔄 Recent Upgrades
+
+This project has been upgraded to a modern, production-ready architecture:
+
+### Database & Storage
+- **Database**: Supabase PostgreSQL with Prisma ORM
+- **Images**: Cloudinary CDN for optimized delivery
+- **API**: Custom Next.js API routes with full CRUD
+
+### Authentication System (NEW!)
+- **Auth Provider**: Supabase Authentication
+- **Features**: Login, Signup, Password Reset, Session Management
+- **Security**: Protected routes, secure API endpoints, httpOnly cookies
+- **Integration**: Ready for cart persistence, wishlists, orders, and addresses
+
+For details, see:
+- **MIGRATION_SUMMARY.md** - Database migration overview
+- **SUPABASE_AUTH_SETUP.md** - Authentication setup guide
+- **AUTH_IMPLEMENTATION_SUMMARY.md** - Auth system overview
+
+## 🚀 Production Deployment
+
+### Required Environment Variables
+```env
+DATABASE_URL=your_supabase_connection_url
+DIRECT_URL=your_supabase_direct_url
+NEXT_PUBLIC_CLOUDINARY_CLOUD_NAME=your_cloudinary_cloud_name
+CLOUDINARY_API_KEY=your_cloudinary_api_key
+CLOUDINARY_API_SECRET=your_cloudinary_api_secret
+```
+
+### Deployment Steps
+1. Set environment variables on hosting platform
+2. Run `npm run build`
+3. Deploy to Vercel, Netlify, or your preferred platform
+4. Run database migrations if needed
+5. Seed production database (optional)
 
 ## 📄 License
 
@@ -272,4 +429,36 @@ For support and inquiries:
 
 ---
 
-Built with ❤️ using Next.js and TypeScript
+## 🎯 Next Steps
+
+### Authentication (✅ Complete)
+- [x] User registration and login
+- [x] Session management
+- [x] Protected routes and API endpoints
+- [x] Password reset flow
+- [x] Email verification support
+
+### High Priority
+- [ ] Implement cart persistence with user accounts
+- [ ] Add wishlist functionality
+- [ ] Create user profile management pages
+- [ ] Implement address management
+- [ ] Add order history page
+
+### Medium Priority
+- [ ] Add payment gateway integration (Stripe/Razorpay)
+- [ ] Implement order tracking system
+- [ ] Add product reviews system
+- [ ] Create admin role management
+- [ ] Implement email notifications
+
+### Future Enhancements
+- [ ] Social authentication (Google, GitHub)
+- [ ] Advanced search and filters
+- [ ] Product recommendations
+- [ ] Loyalty program
+- [ ] Mobile app
+
+---
+
+Built with ❤️ using Next.js, TypeScript, Supabase, and Cloudinary

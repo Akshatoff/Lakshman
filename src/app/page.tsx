@@ -2,8 +2,6 @@
 
 import React, { useState, useEffect } from "react";
 
-import Image from "next/image";
-
 import Header from "@/components/layout/Header";
 import HeroCarousel from "@/components/HeroCarousel";
 import ProductTabs from "@/components/products/ProductTabs";
@@ -30,21 +28,6 @@ interface Product {
   isBestseller: boolean;
 }
 
-interface Category {
-  id: string;
-  name: string;
-  image: string;
-  link: string;
-}
-
-interface ProductData {
-  categories: Category[];
-
-  products: {
-    all: Product[];
-  };
-}
-
 interface CartItem {
   id: string;
 
@@ -60,10 +43,6 @@ interface CartItem {
 export default function Home() {
   const [products, setProducts] = useState<Product[]>([]);
 
-  const [categories, setCategories] = useState<Category[]>([]);
-
-  const [loading, setLoading] = useState(true);
-
   const [cartItems, setCartItems] = useState<CartItem[]>([]);
 
   const [cartTotal, setCartTotal] = useState(0);
@@ -71,18 +50,14 @@ export default function Home() {
   useEffect(() => {
     const loadData = async () => {
       try {
-        const response = await fetch(
-          "https://api.jsonbin.io/v3/b/68a9b08143b1c97be9266c0d/latest",
-        );
+        const response = await fetch("/api/products");
         const result = await response.json();
-        // JSONBin API v3 returns data in result.record
-        const data: ProductData = result.record;
-        setProducts(data.products.all);
-        setCategories(data.categories);
+
+        if (result.success) {
+          setProducts(result.data.products);
+        }
       } catch (error) {
         console.error("Error loading data:", error);
-      } finally {
-        setLoading(false);
       }
     };
 
@@ -247,6 +222,36 @@ export default function Home() {
             <path
               fill="currentColor"
               d="M15.71 12.71a6 6 0 1 0-7.42 0a10 10 0 0 0-6.22 8.18a1 1 0 0 0 2 .22a8 8 0 0 1 15.9 0a1 1 0 0 0 1 .89h.11a1 1 0 0 0 .88-1.1a10 10 0 0 0-6.25-8.19ZM12 12a4 4 0 1 1 4-4a4 4 0 0 1-4 4Z"
+            />
+          </symbol>
+          <symbol
+            xmlns="http://www.w3.org/2000/svg"
+            id="check"
+            viewBox="0 0 24 24"
+          >
+            <path
+              fill="currentColor"
+              d="M9.86 18a1 1 0 0 1-.73-.32l-4.86-5.17a1 1 0 1 1 1.46-1.37l4.12 4.39l8.41-9.2a1 1 0 1 1 1.48 1.34l-9.14 10a1 1 0 0 1-.73.33Z"
+            />
+          </symbol>
+          <symbol
+            xmlns="http://www.w3.org/2000/svg"
+            id="check-circle"
+            viewBox="0 0 24 24"
+          >
+            <path
+              fill="currentColor"
+              d="M12 2a10 10 0 1 0 10 10A10 10 0 0 0 12 2Zm0 18a8 8 0 1 1 8-8a8 8 0 0 1-8 8Zm4.71-10.29l-5 5a1 1 0 0 1-1.42 0l-2-2a1 1 0 0 1 1.42-1.42L11 12.59l4.29-4.3a1 1 0 0 1 1.42 1.42Z"
+            />
+          </symbol>
+          <symbol
+            xmlns="http://www.w3.org/2000/svg"
+            id="shopping-cart"
+            viewBox="0 0 24 24"
+          >
+            <path
+              fill="currentColor"
+              d="M8.5 19a1.5 1.5 0 1 0 1.5 1.5A1.5 1.5 0 0 0 8.5 19ZM19 16H7a1 1 0 0 1 0-2h8.491a3.013 3.013 0 0 0 2.885-2.176l1.585-5.55A1 1 0 0 0 19 5H6.74a3.007 3.007 0 0 0-2.82-2H3a1 1 0 0 0 0 2h.921a1.005 1.005 0 0 1 .962.725l.155.545v.005l1.641 5.742A3 3 0 0 0 7 18h12a1 1 0 0 0 0-2Zm-1.326-9l-1.22 4.274a1.005 1.005 0 0 1-.963.726H8.754l-.255-.892L7.326 7ZM16.5 19a1.5 1.5 0 1 0 1.5 1.5a1.5 1.5 0 0 0-1.5-1.5Z"
             />
           </symbol>
         </defs>

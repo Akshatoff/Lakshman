@@ -3,6 +3,7 @@ import { Inter, Nunito, Open_Sans } from "next/font/google";
 import "./globals.css";
 import Script from "next/script";
 import "bootstrap/dist/css/bootstrap.css";
+import { AuthProvider } from "@/contexts/AuthContext";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -84,7 +85,7 @@ export default function RootLayout({
   return (
     <html lang="en" className={`${nunito.variable} ${openSans.variable}`}>
       <body className={inter.className}>
-        {children}
+        <AuthProvider>{children}</AuthProvider>
 
         {/* Bootstrap JS */}
         <Script
