@@ -70,7 +70,7 @@ const Cart: React.FC<CartProps> = ({ items, total }) => {
                   >
                     <div className="d-flex align-items-center">
                       <Image
-                        src={`/${item.image}`}
+                        src={`${item.image}`}
                         alt={item.name}
                         width={50}
                         height={50}
