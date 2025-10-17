@@ -1,0 +1,231 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
+// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
+
+generator client {
+  provider = "prisma-client-js"
+
+}
+
+datasource db {
+  provider = "postgresql"
+  url      = env("DATABASE_URL")
+  directUrl = env("DIRECT_URL")
+}
+
+model User {
+  id            String    @id @default(cuid())
+  name          String?
+  email         String?   @unique
+  emailVerified DateTime?
+  image         String?
+  password      String?
+  role          String    @default("USER")
+  phone         String?
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  orders        Order[]
+  reviews       Review[]
+  cart          Cart?
+  addresses     Address[]
+  wishlist      Wishlist?
+}
+
+model Product {
+  id            Int       @id @default(autoincrement())
+  title         String
+  slug          String    @unique
+  name          String?
+  description   String
+  priceCents    Int
+  originalPriceCents Int?
+  discount      Int?
+  images        Json
+  image         String?
+  inventory     Int
+  category      String
+  rating        Float     @default(4.0)
+  isNew         Boolean   @default(false)
+  isBestseller  Boolean   @default(false)
+  isFeatured    Boolean   @default(false)
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+
+  reviews       Review[]
+  orderItems    OrderItem[]
+  cartItems     CartItem[]
+  wishlistItems WishlistItem[]
+
+  @@index([category])
+  @@index([slug])
+}
+
+model Order {
+  id            Int       @id @default(autoincrement())
+  orderNumber   String    @unique @default(cuid())
+  user          User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId        String
+
+  totalAmount   Int
+  subtotal      Int
+  tax           Int       @default(0)
+  shipping      Int       @default(0)
+  discount      Int       @default(0)
+
+  status        String    @default("PENDING") // PENDING, PROCESSING, SHIPPED, DELIVERED, CANCELLED
+  paymentStatus String    @default("PENDING") // PENDING, PAID, FAILED, REFUNDED
+  paymentMethod String?
+
+  shippingAddress Address? @relation("ShippingAddress", fields: [shippingAddressId], references: [id])
+  shippingAddressId Int?
+
+  billingAddress Address? @relation("BillingAddress", fields: [billingAddressId], references: [id])
+  billingAddressId Int?
+
+  items         OrderItem[]
+
+  notes         String?
+  trackingNumber String?
+
+  createdAt     DateTime  @default(now())
+  updatedAt     DateTime  @updatedAt
+  shippedAt     DateTime?
+  deliveredAt   DateTime?
+
+  @@index([userId])
+  @@index([status])
+  @@index([orderNumber])
+}
+
+model OrderItem {
+  id          Int      @id @default(autoincrement())
+  order       Order    @relation(fields: [orderId], references: [id], onDelete: Cascade)
+  orderId     Int
+  product     Product  @relation(fields: [productId], references: [id])
+  productId   Int
+
+  quantity    Int
+  priceCents  Int
+  totalCents  Int
+
+  createdAt   DateTime @default(now())
+
+  @@index([orderId])
+  @@index([productId])
+}
+
+model Review {
+  id          Int      @id @default(autoincrement())
+  user        User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId      String
+  product     Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  productId   Int
+
+  rating      Int
+  title       String?
+  comment     String
+
+  isVerified  Boolean  @default(false)
+  helpful     Int      @default(0)
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([productId])
+  @@index([userId])
+  @@unique([userId, productId])
+}
+
+model Cart {
+  id        Int        @id @default(autoincrement())
+  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String     @unique
+
+  items     CartItem[]
+
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+}
+
+model CartItem {
+  id        Int      @id @default(autoincrement())
+  cart      Cart     @relation(fields: [cartId], references: [id], onDelete: Cascade)
+  cartId    Int
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  productId Int
+
+  quantity  Int      @default(1)
+
+  createdAt DateTime @default(now())
+  updatedAt DateTime @updatedAt
+
+  @@unique([cartId, productId])
+  @@index([cartId])
+}
+
+model Wishlist {
+  id        Int            @id @default(autoincrement())
+  user      User           @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String         @unique
+
+  items     WishlistItem[]
+
+  createdAt DateTime       @default(now())
+  updatedAt DateTime       @updatedAt
+}
+
+model WishlistItem {
+  id         Int      @id @default(autoincrement())
+  wishlist   Wishlist @relation(fields: [wishlistId], references: [id], onDelete: Cascade)
+  wishlistId Int
+  product    Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
+  productId  Int
+
+  createdAt  DateTime @default(now())
+
+  @@unique([wishlistId, productId])
+  @@index([wishlistId])
+}
+
+model Address {
+  id            Int      @id @default(autoincrement())
+  user          User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId        String
+
+  fullName      String
+  phone         String
+  addressLine1  String
+  addressLine2  String?
+  city          String
+  state         String
+  zipCode       String
+  country       String   @default("India")
+
+  isDefault     Boolean  @default(false)
+  type          String   @default("HOME") // HOME, WORK, OTHER
+
+  shippingOrders Order[] @relation("ShippingAddress")
+  billingOrders  Order[] @relation("BillingAddress")
+
+  createdAt     DateTime @default(now())
+  updatedAt     DateTime @updatedAt
+
+  @@index([userId])
+}
+
+model Category {
+  id          Int      @id @default(autoincrement())
+  name        String   @unique
+  slug        String   @unique
+  description String?
+  image       String?
+  isActive    Boolean  @default(true)
+
+  createdAt   DateTime @default(now())
+  updatedAt   DateTime @updatedAt
+
+  @@index([slug])
+}

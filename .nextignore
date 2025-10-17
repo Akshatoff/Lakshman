@@ -1,0 +1,6 @@
+# .nextignore
+C:/Users/*/Application Data
+C:/Users/*/AppData
+node_modules
+.git
+.next
