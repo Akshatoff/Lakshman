@@ -29,61 +29,81 @@ export default function Header() {
 
   return (
     <header>
-      {/* Top Bar */}
+      {/* Single Row Header */}
       <div className="container-fluid">
-        <div className="row py-3 border-bottom">
-          <div className="col-sm-4 col-lg-3 text-center text-sm-start">
+        <div className="row py-3 border-bottom align-items-center">
+          {/* Logo */}
+          <div className="col-6 col-md-2 col-lg-2">
             <div className="main-logo">
               <Link href="/">
                 <Image
                   src="/images/logo.png"
                   alt="Laksh-man Logo"
-                  width={150}
-                  height={50}
+                  width={120}
+                  height={40}
                   className="img-fluid"
                 />
               </Link>
             </div>
           </div>
 
-          <div className="col-sm-6 offset-sm-2 offset-md-0 col-lg-5 d-none d-lg-block">
-            <div className="search-bar row bg-light p-2 rounded-4">
-              <div className="col-md-4 d-none d-md-block">
-                <select className="form-select border-0 bg-transparent">
-                  <option>All Categories</option>
-                  <option>Furniture</option>
-                  <option>Home Decor</option>
-                  <option>Office</option>
-                </select>
+          {/* Navigation Menu - Desktop */}
+          <div className="col-md-4 col-lg-3 d-none d-md-flex">
+            <nav className="main-menu d-flex w-100">
+              <ul className="navbar-nav d-flex flex-row gap-3 mb-0 w-100 justify-content-start">
+                <li className="nav-item">
+                  <Link href="/" className="nav-link px-2">
+                    Home
+                  </Link>
+                </li>
+                <li className="nav-item">
+                  <Link href="/#products" className="nav-link px-2">
+                    Shop
+                  </Link>
+                </li>
+                <li className="nav-item">
+                  <Link href="/about" className="nav-link px-2">
+                    About
+                  </Link>
+                </li>
+                <li className="nav-item">
+                  <Link href="/contact" className="nav-link px-2">
+                    Contact
+                  </Link>
+                </li>
+              </ul>
+            </nav>
+          </div>
+
+          {/* Search Bar - Compact */}
+          <div className="col-md-3 col-lg-4 d-none d-md-block">
+            <div className="search-bar bg-light p-2 rounded-4 d-flex align-items-center">
+              <div className="flex-grow-1">
+                <input
+                  type="text"
+                  className="form-control form-control-sm border-0 bg-transparent"
+                  placeholder="Search products..."
+                />
               </div>
-              <div className="col-11 col-md-7">
-                <form
-                  id="search-form"
-                  className="text-center"
-                  action=""
-                  method="post"
-                >
-                  <input
-                    type="text"
-                    className="form-control border-0 bg-transparent"
-                    placeholder="Search products..."
-                  />
-                </form>
-              </div>
-              <div className="col-1">
+              <div className="ms-2">
                 <svg
                   xmlns="http://www.w3.org/2000/svg"
-                  width="24"
-                  height="24"
+                  width="20"
+                  height="20"
                   viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
                 >
-                  <use href="#search" />
+                  <circle cx="11" cy="11" r="8"></circle>
+                  <path d="m21 21-4.35-4.35"></path>
                 </svg>
               </div>
             </div>
           </div>
 
-          <div className="col-sm-8 col-lg-4 d-flex justify-content-end gap-5 align-items-center mt-4 mt-sm-0 justify-content-center justify-content-sm-end">
+          {/* User Account & Cart */}
+          <div className="col-6 col-md-3 col-lg-3 d-flex justify-content-end gap-3 align-items-center">
             {/* User Account */}
             <div className="d-flex align-items-center">
               {loading ? (
@@ -103,26 +123,26 @@ export default function Header() {
                     aria-expanded="false"
                   >
                     <div
-                      className="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center me-2"
+                      className="rounded-circle bg-primary text-white d-flex align-items-center justify-content-center"
                       style={{
-                        width: "35px",
-                        height: "35px",
-                        fontSize: "14px",
+                        width: "32px",
+                        height: "32px",
+                        fontSize: "13px",
                       }}
                     >
                       {user.user_metadata?.name?.charAt(0).toUpperCase() ||
                         user.email?.charAt(0).toUpperCase()}
                     </div>
-                    <div className="text-start d-none d-lg-block">
+                    <div className="text-start ms-2 d-none d-lg-block">
                       <small
                         className="text-muted d-block"
-                        style={{ fontSize: "12px" }}
+                        style={{ fontSize: "11px" }}
                       >
                         Welcome
                       </small>
                       <span
                         className="text-dark fw-semibold"
-                        style={{ fontSize: "14px" }}
+                        style={{ fontSize: "13px" }}
                       >
                         {user.user_metadata?.name || user.email?.split("@")[0]}
                       </span>
@@ -195,19 +215,23 @@ export default function Header() {
                       width="24"
                       height="24"
                       viewBox="0 0 24 24"
+                      fill="none"
+                      stroke="currentColor"
+                      strokeWidth="2"
                     >
-                      <use href="#user" />
+                      <path d="M19 21v-2a4 4 0 0 0-4-4H9a4 4 0 0 0-4 4v2"></path>
+                      <circle cx="12" cy="7" r="4"></circle>
                     </svg>
                     <div className="ms-2 d-none d-lg-block">
                       <small
                         className="text-muted d-block"
-                        style={{ fontSize: "12px" }}
+                        style={{ fontSize: "11px" }}
                       >
                         Account
                       </small>
                       <span
                         className="text-dark fw-semibold"
-                        style={{ fontSize: "14px" }}
+                        style={{ fontSize: "13px" }}
                       >
                         Sign In
                       </span>
@@ -231,8 +255,13 @@ export default function Header() {
                   width="24"
                   height="24"
                   viewBox="0 0 24 24"
+                  fill="none"
+                  stroke="currentColor"
+                  strokeWidth="2"
                 >
-                  <use href="#cart" />
+                  <circle cx="9" cy="21" r="1"></circle>
+                  <circle cx="20" cy="21" r="1"></circle>
+                  <path d="M1 1h4l2.68 13.39a2 2 0 0 0 2 1.61h9.72a2 2 0 0 0 2-1.61L23 6H6"></path>
                 </svg>
                 {itemCount > 0 && (
                   <span className="position-absolute top-0 start-100 translate-middle badge rounded-pill bg-primary">
@@ -243,79 +272,85 @@ export default function Header() {
               <div className="ms-2 d-none d-lg-block">
                 <small
                   className="text-muted d-block"
-                  style={{ fontSize: "12px" }}
+                  style={{ fontSize: "11px" }}
                 >
                   Your Cart
                 </small>
                 <span
                   className="text-dark fw-semibold"
-                  style={{ fontSize: "14px" }}
+                  style={{ fontSize: "13px" }}
                 >
                   ₹{(totalCents / 100).toFixed(2)}
                 </span>
               </div>
             </div>
+
+            {/* Mobile Menu Toggle */}
+            <button
+              className="navbar-toggler d-md-none border-0"
+              type="button"
+              data-bs-toggle="offcanvas"
+              data-bs-target="#offcanvasNavbar"
+              aria-controls="offcanvasNavbar"
+            >
+              <span className="navbar-toggler-icon"></span>
+            </button>
           </div>
         </div>
       </div>
 
-      {/* Navigation */}
-      <div className="container-fluid">
-        <div className="row py-3">
-          <div className="d-flex justify-content-center justify-content-sm-between align-items-center">
-            <nav className="main-menu d-flex navbar navbar-expand-lg">
-              <button
-                className="navbar-toggler"
-                type="button"
-                data-bs-toggle="offcanvas"
-                data-bs-target="#offcanvasNavbar"
-                aria-controls="offcanvasNavbar"
-              >
-                <span className="navbar-toggler-icon"></span>
-              </button>
+      {/* Mobile Navigation Offcanvas */}
+      <div
+        className="offcanvas offcanvas-end"
+        tabIndex={-1}
+        id="offcanvasNavbar"
+        aria-labelledby="offcanvasNavbarLabel"
+      >
+        <div className="offcanvas-header">
+          <h5 className="offcanvas-title" id="offcanvasNavbarLabel">
+            Menu
+          </h5>
+          <button
+            type="button"
+            className="btn-close"
+            data-bs-dismiss="offcanvas"
+            aria-label="Close"
+          ></button>
+        </div>
 
-              <div
-                className="offcanvas offcanvas-end"
-                tabIndex={-1}
-                id="offcanvasNavbar"
-                aria-labelledby="offcanvasNavbarLabel"
-              >
-                <div className="offcanvas-header justify-content-center">
-                  <button
-                    type="button"
-                    className="btn-close"
-                    data-bs-dismiss="offcanvas"
-                    aria-label="Close"
-                  ></button>
-                </div>
-
-                <div className="offcanvas-body">
-                  <ul className="navbar-nav justify-content-end menu-list list-unstyled d-flex gap-md-3 mb-0">
-                    <li className="nav-item active">
-                      <Link href="/" className="nav-link">
-                        Home
-                      </Link>
-                    </li>
-                    <li className="nav-item">
-                      <Link href="/#products" className="nav-link">
-                        Shop
-                      </Link>
-                    </li>
-                    <li className="nav-item">
-                      <Link href="/about" className="nav-link">
-                        About
-                      </Link>
-                    </li>
-                    <li className="nav-item">
-                      <Link href="/contact" className="nav-link">
-                        Contact
-                      </Link>
-                    </li>
-                  </ul>
-                </div>
-              </div>
-            </nav>
+        <div className="offcanvas-body">
+          {/* Mobile Search */}
+          <div className="mb-4">
+            <input
+              type="text"
+              className="form-control"
+              placeholder="Search products..."
+            />
           </div>
+
+          {/* Mobile Navigation */}
+          <ul className="navbar-nav">
+            <li className="nav-item">
+              <Link href="/" className="nav-link">
+                Home
+              </Link>
+            </li>
+            <li className="nav-item">
+              <Link href="/#products" className="nav-link">
+                Shop
+              </Link>
+            </li>
+            <li className="nav-item">
+              <Link href="/about" className="nav-link">
+                About
+              </Link>
+            </li>
+            <li className="nav-item">
+              <Link href="/contact" className="nav-link">
+                Contact
+              </Link>
+            </li>
+          </ul>
         </div>
       </div>
     </header>

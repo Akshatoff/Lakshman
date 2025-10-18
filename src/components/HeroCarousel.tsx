@@ -25,7 +25,7 @@ const slides: Slide[] = [
   },
   {
     id: 2,
-    backgroundImage: "/images/ad-image-1.png",
+    backgroundImage: "/images/banner-2.jpg",
     discount: "20% off",
     title: "Tops and T-shirts Collection",
     description:
@@ -35,12 +35,11 @@ const slides: Slide[] = [
   },
   {
     id: 3,
-    backgroundImage: "/images/ad-image-2.png",
-    discount: "15% off",
-    title: "Shorts and Pants Collection",
-    description:
-      "Upgrade your bottom wear with our versatile collection of shorts and pants. Perfect for any occasion, our collection combines style and comfort. Available in various fits and colors to match your personal style.",
-    buttonText: "Shop Now",
+    backgroundImage: "/images/banner-3.jpg",
+    discount: "",
+    title: "",
+    description: "",
+    buttonText: "",
     buttonLink: "#products",
   },
 ];
@@ -137,6 +136,7 @@ export default function HeroCarousel() {
                     className="display-2 fw-bold font-nunito mb-4"
                     style={{
                       color: "#000",
+                      fontSize: "2rem",
                       textShadow: "2px 2px 8px rgba(0,0,0,0.5)",
                     }}
                   >
@@ -146,7 +146,7 @@ export default function HeroCarousel() {
                     className="lead mb-5 mx-auto"
                     style={{
                       maxWidth: "700px",
-                      fontSize: "1.2rem",
+                      fontSize: "1rem",
                       color: "#000",
                       textShadow: "1px 1px 4px rgba(0,0,0,0.5)",
                     }}
@@ -155,7 +155,7 @@ export default function HeroCarousel() {
                   </p>
                   <a
                     href={slide.buttonLink}
-                    className="btn btn-light btn-lg text-uppercase fs-5 rounded-1 px-5 py-3 fw-bold"
+                    className="btn btn-light btn-lg text-uppercase fs-10 rounded-1 px-5 py-3 fw-bold"
                     style={{
                       boxShadow: "0 4px 15px rgba(0,0,0,0.2)",
                       transition: "all 0.3s ease",
