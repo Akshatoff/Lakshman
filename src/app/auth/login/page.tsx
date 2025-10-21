@@ -268,7 +268,9 @@ function LoginPage() {
 }
 
 export default function LoginPageWrapper() {
-  <Suspense fallback={<div className="text-center py-5">Loading...</div>}>
-    <LoginPage />
-  </Suspense>;
+  return (
+    <Suspense fallback={<div className="text-center py-5">Loading...</div>}>
+      <LoginPage />
+    </Suspense>
+  );
 }
