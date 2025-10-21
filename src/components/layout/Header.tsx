@@ -52,7 +52,7 @@ export default function Header() {
             <nav className="main-menu d-flex w-100">
               <ul className="navbar-nav d-flex flex-row gap-3 mb-0 w-100 justify-content-start">
                 <li className="nav-item">
-                  <Link href="/" className="nav-link px-2">
+                  <Link href="/" className="nav-link px-2 ">
                     Home
                   </Link>
                 </li>

@@ -88,9 +88,9 @@ const ProductTabs: React.FC<ProductTabsProps> = ({ products }) => {
           <Image
             src={product.image || "/images/placeholder.png"}
             alt={product.name || product.title}
-            width={200}
-            height={200}
-            className="tab-image"
+            width={300}
+            height={300}
+            className="tab-image object-cover w-full h-64 rounded-lg"
           />
         </figure>
 
@@ -213,7 +213,7 @@ const ProductTabs: React.FC<ProductTabsProps> = ({ products }) => {
               </div>
 
               {/* Swiper Carousel */}
-              <div className="product-carousel">
+              <div className="product-carousel" style={{ overflow: "hidden" }}>
                 <Swiper
                   modules={[Navigation]}
                   slidesPerView={4}

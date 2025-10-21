@@ -3,6 +3,8 @@
 import React, { useState, useEffect } from "react";
 import Link from "next/link";
 import Image from "next/image";
+import { useAuth } from "@/contexts/AuthContext";
+import { useRouter } from "next/navigation";
 
 interface Product {
   id: string;
@@ -26,6 +28,8 @@ interface Category {
 }
 
 const AdminDashboard: React.FC = () => {
+  const { user, loading: authLoading } = useAuth();
+  const router = useRouter();
   const [products, setProducts] = useState<Product[]>([]);
   const [categories, setCategories] = useState<Category[]>([]);
   const [activeTab, setActiveTab] = useState("products");
@@ -35,6 +39,7 @@ const AdminDashboard: React.FC = () => {
   const [uploadingImage, setUploadingImage] = useState(false);
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string>("");
+  const [checkingAccess, setCheckingAccess] = useState(true);
 
   const [productForm, setProductForm] = useState({
     name: "",
@@ -50,9 +55,37 @@ const AdminDashboard: React.FC = () => {
     isBestseller: false,
   });
 
+  // Check admin access
   useEffect(() => {
-    loadData();
-  }, []);
+    const checkAdminAccess = async () => {
+      if (authLoading) return;
+
+      if (!user) {
+        router.push("/auth/login?redirectTo=/admin/dashboard");
+        return;
+      }
+
+      // Check if user has admin role
+      const userRole = user.user_metadata?.role || user.app_metadata?.role;
+      console.log(userRole);
+      if (userRole !== "admin" && userRole !== "ADMIN") {
+        // Not an admin, redirect to home
+        alert("Access denied. Admin privileges required.");
+        router.push("/");
+        return;
+      }
+
+      setCheckingAccess(false);
+    };
+
+    checkAdminAccess();
+  }, [user, authLoading, router]);
+
+  useEffect(() => {
+    if (!checkingAccess && user) {
+      loadData();
+    }
+  }, [checkingAccess, user]);
 
   const loadData = async () => {
     try {
