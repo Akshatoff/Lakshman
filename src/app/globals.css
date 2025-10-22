@@ -832,3 +832,848 @@ h6 {
   color: black;
   transition: color 0.3s ease-in-out;
 }
+
+/* Add these responsive styles to src/app/globals.css */
+
+/* ============================================
+   RESPONSIVE UTILITIES
+   ============================================ */
+
+/* Container responsive padding */
+@media screen and (max-width: 768px) {
+  .container-fluid {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+
+  .container {
+    padding-left: 1rem;
+    padding-right: 1rem;
+  }
+}
+
+/* ============================================
+   HEADER RESPONSIVE
+   ============================================ */
+
+@media screen and (max-width: 768px) {
+  header .row {
+    padding-top: 0.75rem !important;
+    padding-bottom: 0.75rem !important;
+  }
+
+  /* Logo size on mobile */
+  header .main-logo img {
+    max-width: 100px;
+    height: auto;
+  }
+
+  /* Hide desktop elements on mobile */
+  header .search-bar {
+    display: none !important;
+  }
+}
+
+@media screen and (max-width: 576px) {
+  /* Further reduce logo on very small screens */
+  header .main-logo img {
+    max-width: 80px;
+  }
+
+  /* Adjust cart/user icons spacing */
+  header .gap-3 {
+    gap: 0.75rem !important;
+  }
+}
+
+/* ============================================
+   HERO CAROUSEL RESPONSIVE
+   ============================================ */
+
+@media screen and (max-width: 992px) {
+  .hero-carousel-section {
+    min-height: 80vh !important;
+  }
+
+  .carousel-slide {
+    min-height: 80vh !important;
+  }
+
+  .carousel-slide h1 {
+    font-size: 2.5rem !important;
+    line-height: 1.2 !important;
+  }
+
+  .carousel-slide p {
+    font-size: 1.1rem !important;
+  }
+
+  .carousel-slide .categories {
+    font-size: 1rem !important;
+    padding: 0.5rem 1.5rem !important;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .hero-carousel-section {
+    min-height: 70vh !important;
+  }
+
+  .carousel-slide {
+    min-height: 70vh !important;
+  }
+
+  .carousel-slide h1 {
+    font-size: 2rem !important;
+    margin-bottom: 1rem !important;
+  }
+
+  .carousel-slide p {
+    font-size: 1rem !important;
+    margin-bottom: 2rem !important;
+    padding: 0 1rem;
+  }
+
+  .carousel-slide .categories {
+    font-size: 0.9rem !important;
+    padding: 0.4rem 1.2rem !important;
+  }
+
+  .carousel-control {
+    width: 45px !important;
+    height: 45px !important;
+    margin-left: 10px !important;
+    margin-right: 10px !important;
+  }
+
+  .carousel-control svg {
+    width: 20px !important;
+    height: 20px !important;
+  }
+
+  .carousel-indicators {
+    margin-bottom: 1rem !important;
+  }
+
+  .carousel-indicators .indicator {
+    width: 8px !important;
+    height: 8px !important;
+  }
+
+  .carousel-indicators .indicator.active {
+    width: 24px !important;
+  }
+}
+
+@media screen and (max-width: 576px) {
+  .hero-carousel-section {
+    min-height: 60vh !important;
+  }
+
+  .carousel-slide {
+    min-height: 60vh !important;
+    background-size: cover !important;
+    background-position: center !important;
+  }
+
+  .carousel-slide h1 {
+    font-size: 1.5rem !important;
+    margin-bottom: 0.75rem !important;
+  }
+
+  .carousel-slide p {
+    font-size: 0.9rem !important;
+    margin-bottom: 1.5rem !important;
+    padding: 0 0.5rem;
+    max-width: 90% !important;
+  }
+
+  .carousel-slide .btn {
+    font-size: 0.875rem !important;
+    padding: 0.5rem 1.5rem !important;
+  }
+}
+
+/* ============================================
+   PRODUCTS SECTION RESPONSIVE
+   ============================================ */
+
+@media screen and (max-width: 992px) {
+  .product-tabs .tabs-header {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+  }
+
+  .product-tabs .tabs-header h3 {
+    font-size: 1.5rem !important;
+    margin-bottom: 1rem !important;
+  }
+
+  .product-tabs .nav-tabs {
+    justify-content: flex-start !important;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .product-item {
+    padding: 12px !important;
+  }
+
+  .product-item figure img {
+    max-height: 180px !important;
+  }
+
+  .product-item h3 {
+    font-size: 16px !important;
+    line-height: 22px !important;
+  }
+
+  .product-item .price {
+    font-size: 20px !important;
+  }
+
+  .product-item .product-qty {
+    width: 75px !important;
+  }
+
+  .product-item .btn-number {
+    width: 22px !important;
+    height: 22px !important;
+  }
+
+  .swiper-buttons {
+    gap: 0.5rem !important;
+  }
+
+  .swiper-prev,
+  .swiper-next {
+    width: 35px !important;
+    height: 35px !important;
+    font-size: 14px !important;
+  }
+}
+
+@media screen and (max-width: 576px) {
+  .product-item {
+    padding: 10px !important;
+    margin-bottom: 20px !important;
+  }
+
+  .product-item figure img {
+    max-height: 150px !important;
+  }
+
+  .product-item h3 {
+    font-size: 14px !important;
+    line-height: 20px !important;
+  }
+
+  .product-item .price {
+    font-size: 18px !important;
+  }
+
+  .product-item .d-flex {
+    flex-direction: column !important;
+    gap: 0.5rem !important;
+  }
+
+  .product-item .product-qty {
+    width: 100% !important;
+    justify-content: center !important;
+  }
+
+  .product-item .add-to-cart {
+    width: 100%;
+    text-align: center;
+    font-size: 14px !important;
+  }
+}
+
+/* ============================================
+   CATEGORY CAROUSEL RESPONSIVE
+   ============================================ */
+
+@media screen and (max-width: 768px) {
+  .category-carousel .section-header h3 {
+    font-size: 1.5rem !important;
+  }
+
+  .category-item {
+    padding: 30px 15px !important;
+  }
+
+  .category-item img {
+    width: 60px !important;
+    height: 60px !important;
+  }
+
+  .category-title {
+    font-size: 16px !important;
+    line-height: 22px !important;
+  }
+}
+
+@media screen and (max-width: 576px) {
+  .category-carousel .section-header {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+  }
+
+  .category-item {
+    padding: 25px 10px !important;
+  }
+
+  .category-item img {
+    width: 50px !important;
+    height: 50px !important;
+  }
+
+  .category-title {
+    font-size: 14px !important;
+    line-height: 20px !important;
+  }
+}
+
+/* ============================================
+   NEWSLETTER SECTION RESPONSIVE
+   ============================================ */
+
+@media screen and (max-width: 992px) {
+  .bg-secondary .container .row {
+    flex-direction: column !important;
+  }
+
+  .bg-secondary .section-header h2 {
+    font-size: 2rem !important;
+  }
+
+  .bg-secondary p {
+    font-size: 1rem !important;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .bg-secondary .container {
+    padding: 2rem 1rem !important;
+  }
+
+  .bg-secondary .col-md-6 {
+    padding: 2rem 1rem !important;
+  }
+
+  .bg-secondary .section-header h2 {
+    font-size: 1.5rem !important;
+  }
+}
+
+@media screen and (max-width: 576px) {
+  .bg-secondary .section-header h2 {
+    font-size: 1.25rem !important;
+  }
+
+  .bg-secondary .btn {
+    font-size: 0.875rem !important;
+    padding: 0.5rem 1rem !important;
+  }
+}
+
+/* ============================================
+   FOOTER RESPONSIVE
+   ============================================ */
+
+@media screen and (max-width: 992px) {
+  footer .row > div {
+    margin-bottom: 2rem !important;
+  }
+
+  footer h5 {
+    font-size: 1.1rem !important;
+  }
+
+  footer .main-logo img {
+    max-width: 120px;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  footer .col-lg-3,
+  footer .col-lg-2 {
+    width: 50% !important;
+  }
+
+  footer .social-links {
+    justify-content: flex-start !important;
+  }
+
+  footer .footer-links {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+    gap: 1rem !important;
+  }
+}
+
+@media screen and (max-width: 576px) {
+  footer {
+    padding: 2rem 0 !important;
+  }
+
+  footer .col-lg-3,
+  footer .col-lg-2 {
+    width: 100% !important;
+  }
+
+  footer .contact-info .d-flex {
+    flex-direction: column !important;
+    align-items: flex-start !important;
+  }
+
+  footer .contact-info svg {
+    margin-bottom: 0.5rem !important;
+  }
+}
+
+/* ============================================
+   PRODUCT DETAIL PAGE RESPONSIVE
+   ============================================ */
+
+@media screen and (max-width: 992px) {
+  .product-image-container {
+    margin-bottom: 2rem !important;
+  }
+
+  .product-details h1 {
+    font-size: 2rem !important;
+  }
+
+  .product-details h2 {
+    font-size: 2rem !important;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .product-details h1 {
+    font-size: 1.75rem !important;
+  }
+
+  .product-details h2 {
+    font-size: 1.5rem !important;
+  }
+
+  .product-details .btn {
+    padding: 0.75rem 1rem !important;
+    font-size: 0.9rem !important;
+  }
+}
+
+@media screen and (max-width: 576px) {
+  .product-details h1 {
+    font-size: 1.5rem !important;
+    line-height: 1.3 !important;
+  }
+
+  .product-details h2 {
+    font-size: 1.25rem !important;
+  }
+
+  .product-details .display-5 {
+    font-size: 1.75rem !important;
+  }
+
+  .product-details .h4 {
+    font-size: 1rem !important;
+  }
+}
+
+/* ============================================
+   CHECKOUT PAGE RESPONSIVE
+   ============================================ */
+
+@media screen and (max-width: 992px) {
+  .checkout .col-lg-8,
+  .checkout .col-lg-4 {
+    width: 100% !important;
+  }
+
+  .checkout .sticky-top {
+    position: relative !important;
+    margin-top: 2rem !important;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .checkout .card-body {
+    padding: 1.5rem 1rem !important;
+  }
+
+  .checkout h2 {
+    font-size: 1.5rem !important;
+  }
+
+  .checkout h3 {
+    font-size: 1.25rem !important;
+  }
+
+  .checkout .progress-steps {
+    font-size: 0.875rem !important;
+  }
+}
+
+/* ============================================
+   ACCOUNT PAGE RESPONSIVE
+   ============================================ */
+
+@media screen and (max-width: 992px) {
+  .account-page .col-lg-3,
+  .account-page .col-lg-9 {
+    width: 100% !important;
+  }
+
+  .account-page .sidebar {
+    margin-bottom: 2rem !important;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .account-page .card-body {
+    padding: 1.5rem 1rem !important;
+  }
+
+  .account-page .list-group-item {
+    padding: 1rem !important;
+  }
+}
+
+/* ============================================
+   ADMIN DASHBOARD RESPONSIVE
+   ============================================ */
+
+@media screen and (max-width: 992px) {
+  .admin-dashboard .col-md-3,
+  .admin-dashboard .col-md-9 {
+    width: 100% !important;
+  }
+
+  .admin-dashboard .sidebar {
+    margin-bottom: 2rem !important;
+  }
+
+  .admin-dashboard .table-responsive {
+    overflow-x: auto !important;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .admin-dashboard h1 {
+    font-size: 1.5rem !important;
+  }
+
+  .admin-dashboard .btn-group {
+    flex-direction: column !important;
+  }
+
+  .admin-dashboard .table {
+    font-size: 0.875rem !important;
+  }
+
+  .admin-dashboard .table td,
+  .admin-dashboard .table th {
+    padding: 0.5rem !important;
+  }
+}
+
+/* ============================================
+   OFFCANVAS RESPONSIVE
+   ============================================ */
+
+@media screen and (max-width: 576px) {
+  .offcanvas {
+    width: 90% !important;
+    max-width: 320px !important;
+  }
+
+  .offcanvas-body {
+    padding: 1rem !important;
+  }
+
+  .offcanvas h4 {
+    font-size: 1.25rem !important;
+  }
+}
+
+/* ============================================
+   GENERAL RESPONSIVE UTILITIES
+   ============================================ */
+
+@media screen and (max-width: 768px) {
+  /* Typography scaling */
+  .display-1 { font-size: 3rem !important; }
+  .display-2 { font-size: 2.5rem !important; }
+  .display-3 { font-size: 2rem !important; }
+  .display-4 { font-size: 1.75rem !important; }
+  .display-5 { font-size: 1.5rem !important; }
+  .display-6 { font-size: 1.25rem !important; }
+
+  /* Button sizing */
+  .btn-lg {
+    padding: 0.75rem 1.5rem !important;
+    font-size: 1rem !important;
+  }
+
+  /* Card spacing */
+  .card {
+    margin-bottom: 1rem !important;
+  }
+
+  .card-body {
+    padding: 1.25rem !important;
+  }
+
+  /* Form controls */
+  .form-control,
+  .form-select {
+    font-size: 1rem !important;
+  }
+
+  /* Section padding */
+  section {
+    padding: 3rem 0 !important;
+  }
+
+  /* Grid gaps */
+  .gap-3 {
+    gap: 1rem !important;
+  }
+
+  .gap-4 {
+    gap: 1.5rem !important;
+  }
+}
+
+@media screen and (max-width: 576px) {
+  /* Further typography scaling */
+  .display-1 { font-size: 2.5rem !important; }
+  .display-2 { font-size: 2rem !important; }
+  .display-3 { font-size: 1.75rem !important; }
+  .display-4 { font-size: 1.5rem !important; }
+  .display-5 { font-size: 1.25rem !important; }
+  .display-6 { font-size: 1.1rem !important; }
+
+  h1 { font-size: 1.75rem !important; }
+  h2 { font-size: 1.5rem !important; }
+  h3 { font-size: 1.25rem !important; }
+  h4 { font-size: 1.1rem !important; }
+  h5 { font-size: 1rem !important; }
+  h6 { font-size: 0.9rem !important; }
+
+  /* Spacing */
+  .py-5 {
+    padding-top: 2rem !important;
+    padding-bottom: 2rem !important;
+  }
+
+  .my-5 {
+    margin-top: 2rem !important;
+    margin-bottom: 2rem !important;
+  }
+
+  .mb-4 {
+    margin-bottom: 1.5rem !important;
+  }
+
+  .mb-5 {
+    margin-bottom: 2rem !important;
+  }
+}
+
+/* ============================================
+   SUPPORT SECTION RESPONSIVE
+   ============================================ */
+
+@media screen and (max-width: 992px) {
+  .support-box {
+    margin-bottom: 1.5rem !important;
+  }
+
+  .support-box h5 {
+    width: auto !important;
+    font-size: 1rem !important;
+  }
+}
+
+@media screen and (max-width: 768px) {
+  .support-box .d-flex {
+    flex-direction: column !important;
+    text-align: center !important;
+  }
+
+  .support-box svg {
+    margin-right: 0 !important;
+    margin-bottom: 0.5rem !important;
+  }
+}
+
+/* ============================================
+   IMAGE RESPONSIVE
+   ============================================ */
+
+@media screen and (max-width: 768px) {
+  img {
+    max-width: 100% !important;
+    height: auto !important;
+  }
+}
+
+/* ============================================
+   MODAL RESPONSIVE
+   ============================================ */
+
+@media screen and (max-width: 768px) {
+  .modal-dialog {
+    margin: 0.5rem !important;
+  }
+
+  .modal-lg {
+    max-width: 100% !important;
+  }
+
+  .modal-body {
+    padding: 1rem !important;
+  }
+}
+
+/* ============================================
+   BREADCRUMB RESPONSIVE
+   ============================================ */
+
+@media screen and (max-width: 576px) {
+  .breadcrumb {
+    font-size: 0.875rem !important;
+  }
+
+  .breadcrumb-item {
+    max-width: 150px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+}
+
+/* ============================================
+   TOUCH DEVICE IMPROVEMENTS
+   ============================================ */
+
+@media (hover: none) {
+  /* Increase tap targets for mobile */
+  .btn,
+  .nav-link,
+  .list-group-item,
+  .dropdown-item {
+    min-height: 44px !important;
+    min-width: 44px !important;
+  }
+
+  /* Remove hover effects on touch devices */
+  .product-item:hover {
+    transform: none !important;
+  }
+
+  .category-item:hover {
+    transform: none !important;
+  }
+}
+
+/* ============================================
+   LANDSCAPE ORIENTATION ON MOBILE
+   ============================================ */
+
+@media screen and (max-width: 992px) and (orientation: landscape) {
+  .hero-carousel-section {
+    min-height: 100vh !important;
+  }
+
+  .carousel-slide {
+    min-height: 100vh !important;
+  }
+}
+
+/* ============================================
+   LOADING STATES RESPONSIVE
+   ============================================ */
+
+@media screen and (max-width: 576px) {
+  .spinner-border {
+    width: 1.5rem !important;
+    height: 1.5rem !important;
+  }
+
+  .spinner-border-sm {
+    width: 1rem !important;
+    height: 1rem !important;
+  }
+}
+
+/* ============================================
+   FORM RESPONSIVE
+   ============================================ */
+
+@media screen and (max-width: 768px) {
+  .form-label {
+    font-size: 0.9rem !important;
+  }
+
+  .input-group {
+    flex-wrap: wrap !important;
+  }
+}
+
+@media screen and (max-width: 576px) {
+  .form-check-label {
+    font-size: 0.875rem !important;
+  }
+}
+
+/* ============================================
+   ALERT RESPONSIVE
+   ============================================ */
+
+@media screen and (max-width: 576px) {
+  .alert {
+    font-size: 0.875rem !important;
+    padding: 0.75rem !important;
+  }
+}
+
+/* ============================================
+   BADGE RESPONSIVE
+   ============================================ */
+
+@media screen and (max-width: 576px) {
+  .badge {
+    font-size: 0.75rem !important;
+    padding: 0.25rem 0.5rem !important;
+  }
+}
+
+/* ============================================
+   PREVENT HORIZONTAL SCROLL
+   ============================================ */
+
+body {
+  overflow-x: hidden;
+}
+
+.container-fluid,
+.container {
+  overflow-x: hidden;
+}
+
+/* ============================================
+   SAFE AREA FOR NOTCHED DEVICES
+   ============================================ */
+
+@supports (padding: max(0px)) {
+  body {
+    padding-left: max(0px, env(safe-area-inset-left));
+    padding-right: max(0px, env(safe-area-inset-right));
+  }
+}
