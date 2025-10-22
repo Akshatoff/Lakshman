@@ -66,16 +66,26 @@ const AdminDashboard: React.FC = () => {
       }
 
       // Check if user has admin role
-      const userRole = user.user_metadata?.role || user.app_metadata?.role;
-      console.log(userRole);
-      if (userRole !== "admin" && userRole !== "ADMIN") {
-        // Not an admin, redirect to home
-        alert("Access denied. Admin privileges required.");
-        router.push("/");
-        return;
-      }
-
-      setCheckingAccess(false);
+      try {
+              // Fetch user role from your Prisma database
+              const response = await fetch('/api/user/role');
+              const data = await response.json();
+              
+              console.log('User role from database:', data.role);
+              
+              if (data.role !== "ADMIN" && data.role !== "admin") {
+                // Not an admin, redirect to home
+                alert("Access denied. Admin privileges required.");
+                router.push("/");
+                return;
+              }
+      
+              setCheckingAccess(false);
+            } catch (error) {
+              console.error('Error checking admin access:', error);
+              alert("Error verifying access. Please try again.");
+              router.push("/");
+            }
     };
 
     checkAdminAccess();
