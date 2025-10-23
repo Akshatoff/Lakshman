@@ -36,8 +36,10 @@ export default function Home() {
   useEffect(() => {
     const loadData = async () => {
       try {
-        const response = await fetch("/api/products");
+        console.time("fetchProducts");
+        const response = await fetch("/api/products?limit=100");
         const result = await response.json();
+        console.timeEnd("fetchProducts");
 
         if (result.success) {
           setProducts(result.data.products);

@@ -1,7 +1,5 @@
 import { NextRequest, NextResponse } from "next/server";
-import { PrismaClient } from "@prisma/client";
-
-const prisma = new PrismaClient();
+import { prisma } from "@/lib/db/prisma";
 
 // GET /api/products - Fetch all products
 export async function GET(request: NextRequest) {
@@ -28,17 +26,15 @@ export async function GET(request: NextRequest) {
     }
 
     // Get total count
-    const total = await prisma.product.count({ where });
-
-    // Fetch products with pagination
-    const products = await prisma.product.findMany({
-      where,
-      skip: offset ? parseInt(offset) : 0,
-      take: limit ? parseInt(limit) : undefined,
-      orderBy: {
-        createdAt: "desc",
-      },
-    });
+    const [total, products] = await Promise.all([
+      prisma.product.count({ where }),
+      prisma.product.findMany({
+        where,
+        skip: offset ? parseInt(offset) : 0,
+        take: limit ? parseInt(limit) : 100,
+        orderBy: { createdAt: "desc" },
+      }),
+    ]);
 
     // Fetch categories
     const categories = await prisma.category.findMany({

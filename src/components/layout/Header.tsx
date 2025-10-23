@@ -39,7 +39,7 @@ export default function Header() {
                   <Image
                     src="/images/logo.png"
                     alt="Laksh-man Logo"
-                    width={120}
+                    width={200}
                     height={40}
                     className="img-fluid"
                   />
@@ -78,7 +78,7 @@ export default function Header() {
             {/* Search Trigger */}
             <div className="col-md-3 col-lg-4 d-none d-md-block">
               <button
-                className="search-bar bg-light p-2 rounded-4 d-flex align-items-center border-0 w-100 text-start"
+                className="search-bar bg-light p-2 rounded-4 d-flex align-items-center border-0 w-50 text-start"
                 type="button"
                 data-bs-toggle="offcanvas"
                 data-bs-target="#offcanvasSearch"
@@ -137,9 +137,7 @@ export default function Header() {
                         <small
                           className="text-muted d-block"
                           style={{ fontSize: "11px" }}
-                        >
-                          Welcome
-                        </small>
+                        ></small>
                         <span
                           className="text-dark fw-semibold"
                           style={{ fontSize: "13px" }}
@@ -198,9 +196,7 @@ export default function Header() {
                         <small
                           className="text-muted d-block"
                           style={{ fontSize: "11px" }}
-                        >
-                          Account
-                        </small>
+                        ></small>
                         <span
                           className="text-dark fw-semibold"
                           style={{ fontSize: "13px" }}
@@ -245,9 +241,7 @@ export default function Header() {
                   <small
                     className="text-muted d-block"
                     style={{ fontSize: "11px" }}
-                  >
-                    Your Cart
-                  </small>
+                  ></small>
                   <span
                     className="text-dark fw-semibold"
                     style={{ fontSize: "13px" }}
