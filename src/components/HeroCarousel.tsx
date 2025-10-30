@@ -18,8 +18,7 @@ const slides: Slide[] = [
     backgroundImage: "/images/background-pattern.jpg",
     discount: "40% off",
     title: "Men's Lightweight Fleece Trousers",
-    description:
-      "Wardrobe staple? Yeah, you could call 'em that. Smooth on the outside with unbrushed loops on the inside, these lightweight French terry joggers are breathable enough to wear all year long. An elastic waistband with drawcord secures your fit, while subtle graphics nod to MJ's time on the baseball diamond.",
+    description:"",
     buttonText: "Shop Now",
     buttonLink: "#products",
   },
@@ -28,8 +27,7 @@ const slides: Slide[] = [
     backgroundImage: "/images/banner-2.jpg",
     discount: "20% off",
     title: "Tops and T-shirts Collection",
-    description:
-      "Discover our premium collection of tops and t-shirts. From casual everyday wear to stylish statement pieces, find the perfect addition to your wardrobe. Made with quality fabrics for maximum comfort and durability.",
+    description:"",
     buttonText: "Shop Now",
     buttonLink: "#products",
   },
