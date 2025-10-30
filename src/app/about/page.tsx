@@ -2,6 +2,7 @@
 
 import React from "react";
 import Image from "next/image";
+import Link from "next/link";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 
@@ -448,15 +449,15 @@ export default function AboutPage() {
                 Discover our range of premium textiles and quality products
               </p>
               <div className="d-flex gap-3 justify-content-center flex-wrap">
-                <a href="/#products" className="btn btn-light btn-lg px-5">
+                <Link href="/#products" className="btn btn-light btn-lg px-5">
                   Shop Now
-                </a>
-                <a
+                </Link>
+                <Link
                   href="/contact"
                   className="btn btn-outline-light btn-lg px-5"
                 >
                   Contact Us
-                </a>
+                </Link>
               </div>
             </div>
           </div>
