@@ -88,8 +88,8 @@ const ProductTabs: React.FC<ProductTabsProps> = ({ products }) => {
           <Image
             src={product.image || "/images/placeholder.png"}
             alt={product.name || product.title}
-            width={300}
-            height={300}
+            width={200}
+            height={200}
             className="tab-image object-cover w-full h-64 rounded-lg"
           />
         </figure>
