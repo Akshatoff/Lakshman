@@ -202,7 +202,7 @@ export default function Home() {
       <HeroCarousel />
 
       {/* Products Section */}
-      <section className="py-5" id="products">
+      <section className="" id="products">
         <div className="container-fluid">
           <ProductTabs products={products} />
         </div>

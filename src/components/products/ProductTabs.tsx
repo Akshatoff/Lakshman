@@ -164,7 +164,7 @@ const ProductTabs: React.FC<ProductTabsProps> = ({ products }) => {
     <div className="row">
       <div className="col-md-12">
         <div className="bootstrap-tabs product-tabs">
-          <div className="tabs-header d-flex justify-content-between border-bottom my-5">
+          <div className="tabs-header d-flex justify-content-between border-bottom my-4">
             <h3 className="fw-bold font-nunito text-black">
               Trending Products
             </h3>

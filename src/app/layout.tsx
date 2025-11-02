@@ -20,11 +20,11 @@ const openSans = Open_Sans({
 });
 
 export const metadata: Metadata = {
-  title: "Laksh-man - Premium Furniture & Home Decor",
+  title: "Laksh-man - Premium Clothes and Outfits",
   description:
-    "Discover premium furniture and home decor at Laksh-man. Shop sofas, beds, dining tables, office furniture, and more with exclusive discounts and fast delivery.",
+    "Discover premium clothes and outfits at Laksh-man. Shop shirts, pants, dresses, shoes, and more with exclusive discounts and fast delivery.",
   keywords:
-    "furniture, home decor, sofas, beds, dining tables, office furniture, wardrobes, premium furniture, home furnishing",
+    "clothes, shirts, shoes, tshirts, Tshirts, Hoodies, Men Clotes, Women Clothes, Kid Clothes, shop clothes, buy clothes",
   authors: [{ name: "Laksh-man" }],
   creator: "Laksh-man",
   publisher: "Laksh-man",
@@ -38,9 +38,9 @@ export const metadata: Metadata = {
     canonical: "/",
   },
   openGraph: {
-    title: "Laksh-man - Premium Furniture & Home Decor",
+    title: "Laksh-man - Premium Clothes & Outfits",
     description:
-      "Discover premium furniture and home decor at Laksh-man. Shop sofas, beds, dining tables, office furniture, and more with exclusive discounts and fast delivery.",
+      "Discover premium clothes and outfits at Laksh-man. Shop shirts, pants, dresses, shoes, and more with exclusive discounts and fast delivery.",
     url: "https://laksh-man.in/",
     siteName: "Laksh-man",
     images: [
@@ -55,9 +55,9 @@ export const metadata: Metadata = {
   },
   twitter: {
     card: "summary_large_image",
-    title: "Laksh-man - Premium Furniture & Home Decor",
+    title: "Laksh-man - Premium Clothes & Outfits",
     description:
-      "Discover premium furniture and home decor at Laksh-man. Shop sofas, beds, dining tables, office furniture, and more with exclusive discounts and fast delivery.",
+      "Discover premium clothes and outfits at Laksh-man. Shop shirts, pants, dresses, shoes, and more with exclusive discounts and fast delivery.",
     images: ["/images/twitter-image.jpg"],
   },
   robots: {
