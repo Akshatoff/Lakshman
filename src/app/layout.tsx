@@ -33,7 +33,7 @@ export const metadata: Metadata = {
     address: false,
     telephone: false,
   },
-  metadataBase: new URL("https://lakshman.com"),
+  metadataBase: new URL("https://laksh-man.in/"),
   alternates: {
     canonical: "/",
   },
@@ -41,7 +41,7 @@ export const metadata: Metadata = {
     title: "Laksh-man - Premium Furniture & Home Decor",
     description:
       "Discover premium furniture and home decor at Laksh-man. Shop sofas, beds, dining tables, office furniture, and more with exclusive discounts and fast delivery.",
-    url: "https://lakshman.com",
+    url: "https://laksh-man.in/",
     siteName: "Laksh-man",
     images: [
       {
@@ -74,7 +74,7 @@ export const metadata: Metadata = {
     },
   },
   verification: {
-    google: "google-site-verification=verification_token_here",
+    google: "yzl5U-a6Iz9CFcJd0tBTp-HFrE_ZRvS-kgNXuF9w2CE",
   },
 };
 
