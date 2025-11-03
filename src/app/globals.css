@@ -1406,12 +1406,24 @@ h6 {
 
 @media screen and (max-width: 768px) {
   /* Typography scaling */
-  .display-1 { font-size: 3rem !important; }
-  .display-2 { font-size: 2.5rem !important; }
-  .display-3 { font-size: 2rem !important; }
-  .display-4 { font-size: 1.75rem !important; }
-  .display-5 { font-size: 1.5rem !important; }
-  .display-6 { font-size: 1.25rem !important; }
+  .display-1 {
+    font-size: 3rem !important;
+  }
+  .display-2 {
+    font-size: 2.5rem !important;
+  }
+  .display-3 {
+    font-size: 2rem !important;
+  }
+  .display-4 {
+    font-size: 1.75rem !important;
+  }
+  .display-5 {
+    font-size: 1.5rem !important;
+  }
+  .display-6 {
+    font-size: 1.25rem !important;
+  }
 
   /* Button sizing */
   .btn-lg {
@@ -1451,19 +1463,43 @@ h6 {
 
 @media screen and (max-width: 576px) {
   /* Further typography scaling */
-  .display-1 { font-size: 2.5rem !important; }
-  .display-2 { font-size: 2rem !important; }
-  .display-3 { font-size: 1.75rem !important; }
-  .display-4 { font-size: 1.5rem !important; }
-  .display-5 { font-size: 1.25rem !important; }
-  .display-6 { font-size: 1.1rem !important; }
+  .display-1 {
+    font-size: 2.5rem !important;
+  }
+  .display-2 {
+    font-size: 2rem !important;
+  }
+  .display-3 {
+    font-size: 1.75rem !important;
+  }
+  .display-4 {
+    font-size: 1.5rem !important;
+  }
+  .display-5 {
+    font-size: 1.25rem !important;
+  }
+  .display-6 {
+    font-size: 1.1rem !important;
+  }
 
-  h1 { font-size: 1.75rem !important; }
-  h2 { font-size: 1.5rem !important; }
-  h3 { font-size: 1.25rem !important; }
-  h4 { font-size: 1.1rem !important; }
-  h5 { font-size: 1rem !important; }
-  h6 { font-size: 0.9rem !important; }
+  h1 {
+    font-size: 1.75rem !important;
+  }
+  h2 {
+    font-size: 1.5rem !important;
+  }
+  h3 {
+    font-size: 1.25rem !important;
+  }
+  h4 {
+    font-size: 1.1rem !important;
+  }
+  h5 {
+    font-size: 1rem !important;
+  }
+  h6 {
+    font-size: 0.9rem !important;
+  }
 
   /* Spacing */
   .py-5 {
@@ -1651,6 +1687,9 @@ h6 {
   .badge {
     font-size: 0.75rem !important;
     padding: 0.25rem 0.5rem !important;
+  }
+  .tab-image {
+    width: 150px !important;
   }
 }
 

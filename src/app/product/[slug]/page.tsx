@@ -7,29 +7,55 @@ import { use, useEffect, useState } from "react";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import SvgSprite from "@/components/common/SvgSprite";
+import { useCart } from "@/contexts/CartContext";
 
 interface Product {
-  id: string;
+  id: number;
+  title: string;
   name: string;
-  image: string;
+  slug: string;
+  description: string;
   price: number;
-  originalPrice?: number;
+  priceCents: number;
+  originalPriceCents?: number;
   discount?: number;
-  rating: number;
-  quantity: string;
+  image: string;
+  images: any;
+  inventory: number;
   category: string;
+  rating: number;
   isNew: boolean;
   isBestseller: boolean;
+  isFeatured: boolean;
 }
 
 export default function ProductPage({
   params,
 }: {
-  params: Promise<{ slug: string }>;
+  params: Promise<{ slug: number }>;
 }) {
   const { slug } = use(params);
   const [product, setProduct] = useState<Product | null>(null);
+  const [quantities, setQuantities] = useState<{ [key: number]: number }>({});
   const [loading, setLoading] = useState(true);
+  const { addToCart } = useCart();
+
+  const updateQuantity = (productId: number, change: number) => {
+    setQuantities((prev) => {
+      const current = prev[productId] || 1;
+      const newQty = Math.max(1, current + change);
+      return { ...prev, [productId]: newQty };
+    });
+  };
+
+  const getQuantity = (productId: number) => quantities[productId] || 1;
+
+  const handleAddToCart = async (productId: number) => {
+    const quantity = getQuantity(productId);
+    await addToCart(productId, quantity);
+    // Reset quantity after adding
+    setQuantities((prev) => ({ ...prev, [productId]: 1 }));
+  };
 
   useEffect(() => {
     async function loadProduct() {
@@ -147,9 +173,9 @@ export default function ProductPage({
                   <h2 className="display-5 fw-bold text-success mb-0">
                     ₹{product.price.toLocaleString()}
                   </h2>
-                  {product.originalPrice && (
+                  {product.originalPriceCents && (
                     <span className="h4 text-muted text-decoration-line-through">
-                      ₹{product.originalPrice.toLocaleString()}
+                      ₹{product.originalPriceCents.toLocaleString()}
                     </span>
                   )}
                 </div>
@@ -157,7 +183,8 @@ export default function ProductPage({
                   <p className="text-success fw-semibold mt-2">
                     You save ₹
                     {(
-                      (product.originalPrice || product.price) - product.price
+                      (product.originalPriceCents || product.price) -
+                      product.price
                     ).toLocaleString()}{" "}
                     ({product.discount}% off)
                   </p>
@@ -167,7 +194,7 @@ export default function ProductPage({
               {/* Quantity */}
               <div className="mb-4">
                 <p className="text-muted mb-2">
-                  <strong>Quantity:</strong> {product.quantity}
+                  <strong>Quantity:</strong> {getQuantity(product.id)}
                 </p>
                 <p className="text-muted mb-2">
                   <strong>Category:</strong>{" "}
@@ -187,12 +214,21 @@ export default function ProductPage({
               <div className="border-top pt-4">
                 <div className="row g-3">
                   <div className="col-12">
-                    <button className="btn btn-success btn-lg w-100 py-3">
-                      <svg width="24" height="24" className="me-2">
-                        <use xlinkHref="#shopping-cart"></use>
-                      </svg>
-                      Add to Cart
-                    </button>
+                    <a
+                      href="#"
+                      className="nav-link add-to-cart"
+                      onClick={(e) => {
+                        e.preventDefault();
+                        handleAddToCart(product.id);
+                      }}
+                    >
+                      <button className="btn btn-success btn-lg w-100 py-3">
+                        <svg width="24" height="24" className="me-2">
+                          <use xlinkHref="#shopping-cart"></use>
+                        </svg>
+                        Add to Cart
+                      </button>
+                    </a>
                   </div>
                   <div className="col-12">
                     <button className="btn btn-outline-secondary btn-lg w-100 py-3">
