@@ -6,7 +6,6 @@ import HeroCarousel from "@/components/HeroCarousel";
 import ProductTabs from "@/components/products/ProductTabs";
 import Cart from "@/components/cart/Cart";
 import Search from "@/components/search/Search";
-import Newsletter from "@/components/newsletter/Newsletter";
 import Footer from "@/components/layout/Footer";
 import Preloader from "@/components/common/Preloader";
 
@@ -208,8 +207,7 @@ export default function Home() {
         </div>
       </section>
 
-      {/* Newsletter Section */}
-      <Newsletter />
+
 
       {/* Support Section */}
       <section className="py-5 bg-light">
@@ -295,3 +293,7 @@ export default function Home() {
     </>
   );
 }
+
+
+// Todo - Website dropdown , home sop header remove
+// Clothing - Men Women Kids, SportsWear - Running Cricket Football Waskat Footwear - Sports Shoes and Casual wear, Accessories - Bat ball gloves backpack. Furniture - Home Office

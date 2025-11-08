@@ -1697,15 +1697,6 @@ h6 {
    PREVENT HORIZONTAL SCROLL
    ============================================ */
 
-body {
-  overflow-x: hidden;
-}
-
-.container-fluid,
-.container {
-  overflow-x: hidden;
-}
-
 /* ============================================
    SAFE AREA FOR NOTCHED DEVICES
    ============================================ */
@@ -1715,4 +1706,32 @@ body {
     padding-left: max(0px, env(safe-area-inset-left));
     padding-right: max(0px, env(safe-area-inset-right));
   }
+}
+
+/* Add this to src/app/globals.css */
+
+/* ============================================
+   HEADER Z-INDEX FIX
+   ============================================ */
+
+header.sticky-top {
+  z-index: 1030 !important;
+}
+
+.dropdown-menu {
+  z-index: 1031 !important;
+}
+
+/* Ensure hero carousel stays below header */
+.hero-carousel-section {
+  position: relative;
+  z-index: 1 !important;
+}
+
+.hero-carousel-section .carousel-slide {
+  z-index: 1 !important;
+}
+
+.hero-carousel-section .carousel-slide.active {
+  z-index: 2 !important;
 }
