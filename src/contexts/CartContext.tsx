@@ -45,7 +45,7 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   const { user } = useAuth();
 
   const refreshCart = useCallback(async () => {
-    if (!user) {
+    if (!user?.id) {
       setItems([]);
       setLoading(false);
       return;
@@ -66,17 +66,17 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
     } finally {
       setLoading(false);
     }
-  }, [user]);
+  }, [user?.id]);
 
   // Fetch cart on mount and when user changes
   useEffect(() => {
-    if (user) {
+    if (user?.id) {
       refreshCart();
     } else {
       setItems([]);
       setLoading(false);
     }
-  }, [user, refreshCart]);
+  }, [user?.id, refreshCart]);
 
   const addToCart = async (productId: number, quantity: number = 1) => {
     if (!user) {

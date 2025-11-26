@@ -8,6 +8,7 @@ import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
 import SvgSprite from "@/components/common/SvgSprite";
 import { useCart } from "@/contexts/CartContext";
+import { ReviewSection } from "@/components/products/ReviewSection";
 
 interface Product {
   id: number;
@@ -230,14 +231,6 @@ export default function ProductPage({
                       </button>
                     </a>
                   </div>
-                  <div className="col-12">
-                    <button className="btn btn-outline-secondary btn-lg w-100 py-3">
-                      <svg width="24" height="24" className="me-2">
-                        <use xlinkHref="#heart"></use>
-                      </svg>
-                      Add to Wishlist
-                    </button>
-                  </div>
                 </div>
               </div>
 
@@ -286,6 +279,7 @@ export default function ProductPage({
                   </li>
                 </ul>
               </div>
+              <ReviewSection productId={product.id} />
             </div>
           </div>
         </div>

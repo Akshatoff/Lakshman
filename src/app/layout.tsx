@@ -5,6 +5,7 @@ import Script from "next/script";
 import "bootstrap/dist/css/bootstrap.css";
 import { AuthProvider } from "@/contexts/AuthContext";
 import { CartProvider } from "@/contexts/CartContext";
+import { WishlistProvider } from "@/contexts/WishlistContext";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -87,7 +88,9 @@ export default function RootLayout({
     <html lang="en" className={`${nunito.variable} ${openSans.variable}`}>
       <body className={inter.className}>
         <AuthProvider>
-          <CartProvider>{children}</CartProvider>
+          <CartProvider>
+            <WishlistProvider>{children}</WishlistProvider>
+          </CartProvider>
         </AuthProvider>
 
         {/* Bootstrap JS */}

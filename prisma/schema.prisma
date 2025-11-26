@@ -1,12 +1,8 @@
 // This is your Prisma schema file,
 // learn more about it in the docs: https://pris.ly/d/prisma-schema
 
-// Looking for ways to speed up your queries, or scale easily with your serverless or edge functions?
-// Try Prisma Accelerate: https://pris.ly/cli/accelerate-init
-
 generator client {
   provider = "prisma-client-js"
-
 }
 
 datasource db {
@@ -61,6 +57,9 @@ model Product {
 
   @@index([category])
   @@index([slug])
+  @@index([isBestseller]) // ✅ ADDED
+  @@index([isNew])        // ✅ ADDED
+  @@index([isFeatured])   // ✅ ADDED
 }
 
 model Order {
@@ -75,8 +74,8 @@ model Order {
   shipping      Int       @default(0)
   discount      Int       @default(0)
 
-  status        String    @default("PENDING") // PENDING, PROCESSING, SHIPPED, DELIVERED, CANCELLED
-  paymentStatus String    @default("PENDING") // PENDING, PAID, FAILED, REFUNDED
+  status        String    @default("PENDING")
+  paymentStatus String    @default("PENDING")
   paymentMethod String?
 
   shippingAddress Address? @relation("ShippingAddress", fields: [shippingAddressId], references: [id])
@@ -98,6 +97,7 @@ model Order {
   @@index([userId])
   @@index([status])
   @@index([orderNumber])
+  @@index([createdAt]) // ✅ ADDED for sorting
 }
 
 model OrderItem {
@@ -164,6 +164,7 @@ model CartItem {
 
   @@unique([cartId, productId])
   @@index([cartId])
+  @@index([productId]) // ✅ ADDED
 }
 
 model Wishlist {
@@ -188,6 +189,7 @@ model WishlistItem {
 
   @@unique([wishlistId, productId])
   @@index([wishlistId])
+  @@index([productId]) // ✅ ADDED
 }
 
 model Address {
@@ -205,7 +207,7 @@ model Address {
   country       String   @default("India")
 
   isDefault     Boolean  @default(false)
-  type          String   @default("HOME") // HOME, WORK, OTHER
+  type          String   @default("HOME")
 
   shippingOrders Order[] @relation("ShippingAddress")
   billingOrders  Order[] @relation("BillingAddress")

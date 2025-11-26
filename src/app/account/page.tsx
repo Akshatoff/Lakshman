@@ -1,10 +1,12 @@
 "use client";
 
-import React, { useState, useEffect } from "react";
-import { useRouter } from "next/navigation";
+import React, { useState, useEffect, Suspense } from "react";
+import { useRouter, useSearchParams } from "next/navigation";
 import { useAuth } from "@/contexts/AuthContext";
 import Header from "@/components/layout/Header";
 import Footer from "@/components/layout/Footer";
+import { OrdersTab } from "@/components/account/OrdersTab/page";
+import { AddressManagement } from "@/components/account/AddressManagement/page";
 
 interface UserProfile {
   name: string;
@@ -13,9 +15,10 @@ interface UserProfile {
   avatar?: string;
 }
 
-export default function AccountPage() {
+function AccountPageContent() {
   const { user, signOut, loading: authLoading, updateProfile } = useAuth();
   const router = useRouter();
+  const searchParams = useSearchParams();
   const [activeTab, setActiveTab] = useState("profile");
   const [loading, setLoading] = useState(false);
   const [message, setMessage] = useState({ type: "", text: "" });
@@ -26,6 +29,21 @@ export default function AccountPage() {
     email: "",
     phone: "",
   });
+
+  // Password change state
+  const [passwordData, setPasswordData] = useState({
+    currentPassword: "",
+    newPassword: "",
+    confirmPassword: "",
+  });
+
+  useEffect(() => {
+    // Check for tab parameter in URL
+    const tab = searchParams.get("tab");
+    if (tab) {
+      setActiveTab(tab);
+    }
+  }, [searchParams]);
 
   useEffect(() => {
     if (!authLoading && !user) {
@@ -65,6 +83,38 @@ export default function AccountPage() {
     }
   };
 
+  const handlePasswordChange = async (e: React.FormEvent) => {
+    e.preventDefault();
+    setLoading(true);
+    setMessage({ type: "", text: "" });
+
+    // Validate passwords
+    if (passwordData.newPassword !== passwordData.confirmPassword) {
+      setMessage({ type: "error", text: "Passwords do not match" });
+      setLoading(false);
+      return;
+    }
+
+    if (passwordData.newPassword.length < 6) {
+      setMessage({
+        type: "error",
+        text: "Password must be at least 6 characters long",
+      });
+      setLoading(false);
+      return;
+    }
+
+    try {
+      // Redirect to password reset page
+      router.push("/auth/forgot-password");
+    } catch (error) {
+      setMessage({ type: "error", text: "Failed to change password" });
+      console.error("Password change error:", error);
+    } finally {
+      setLoading(false);
+    }
+  };
+
   const handleLogout = async () => {
     try {
       await signOut();
@@ -73,6 +123,14 @@ export default function AccountPage() {
     } catch (error) {
       console.error("Logout error:", error);
     }
+  };
+
+  const handleTabChange = (tab: string) => {
+    setActiveTab(tab);
+    // Update URL without page reload
+    const url = new URL(window.location.href);
+    url.searchParams.set("tab", tab);
+    window.history.pushState({}, "", url);
   };
 
   if (authLoading) {
@@ -113,7 +171,7 @@ export default function AccountPage() {
               <div className="list-group list-group-flush">
                 <button
                   className={`list-group-item list-group-item-action ${activeTab === "profile" ? "active" : ""}`}
-                  onClick={() => setActiveTab("profile")}
+                  onClick={() => handleTabChange("profile")}
                 >
                   <svg
                     width="20"
@@ -128,7 +186,7 @@ export default function AccountPage() {
                 </button>
                 <button
                   className={`list-group-item list-group-item-action ${activeTab === "orders" ? "active" : ""}`}
-                  onClick={() => setActiveTab("orders")}
+                  onClick={() => handleTabChange("orders")}
                 >
                   <svg
                     width="20"
@@ -143,7 +201,7 @@ export default function AccountPage() {
                 </button>
                 <button
                   className={`list-group-item list-group-item-action ${activeTab === "addresses" ? "active" : ""}`}
-                  onClick={() => setActiveTab("addresses")}
+                  onClick={() => handleTabChange("addresses")}
                 >
                   <svg
                     width="20"
@@ -157,8 +215,23 @@ export default function AccountPage() {
                   My Addresses
                 </button>
                 <button
+                  className={`list-group-item list-group-item-action ${activeTab === "wishlist" ? "active" : ""}`}
+                  onClick={() => handleTabChange("wishlist")}
+                >
+                  <svg
+                    width="20"
+                    height="20"
+                    className="me-2"
+                    fill="currentColor"
+                    viewBox="0 0 24 24"
+                  >
+                    <path d="M20.16 4.61A6.27 6.27 0 0 0 12 4a6.27 6.27 0 0 0-8.16 9.48l7.45 7.45a1 1 0 0 0 1.42 0l7.45-7.45a6.27 6.27 0 0 0 0-8.87Zm-1.41 7.46L12 18.81l-6.75-6.74a4.28 4.28 0 0 1 3-7.3a4.25 4.25 0 0 1 3 1.25a1 1 0 0 0 1.42 0a4.27 4.27 0 0 1 6 6.05Z" />
+                  </svg>
+                  My Wishlist
+                </button>
+                <button
                   className={`list-group-item list-group-item-action ${activeTab === "security" ? "active" : ""}`}
-                  onClick={() => setActiveTab("security")}
+                  onClick={() => handleTabChange("security")}
                 >
                   <svg
                     width="20"
@@ -263,10 +336,16 @@ export default function AccountPage() {
             )}
 
             {/* Orders Tab */}
-            {activeTab === "orders" && (
+            {activeTab === "orders" && <OrdersTab />}
+
+            {/* Addresses Tab */}
+            {activeTab === "addresses" && <AddressManagement />}
+
+            {/* Wishlist Tab */}
+            {activeTab === "wishlist" && (
               <div className="card shadow-sm">
                 <div className="card-body">
-                  <h4 className="card-title mb-4">My Orders</h4>
+                  <h4 className="card-title mb-4">My Wishlist</h4>
                   <div className="text-center py-5">
                     <svg
                       width="100"
@@ -275,43 +354,18 @@ export default function AccountPage() {
                       fill="currentColor"
                       viewBox="0 0 24 24"
                     >
-                      <path d="M19 3H5c-1.1 0-2 .9-2 2v14c0 1.1.9 2 2 2h14c1.1 0 2-.9 2-2V5c0-1.1-.9-2-2-2zm0 16H5V5h14v14z" />
+                      <path d="M20.16 4.61A6.27 6.27 0 0 0 12 4a6.27 6.27 0 0 0-8.16 9.48l7.45 7.45a1 1 0 0 0 1.42 0l7.45-7.45a6.27 6.27 0 0 0 0-8.87Zm-1.41 7.46L12 18.81l-6.75-6.74a4.28 4.28 0 0 1 3-7.3a4.25 4.25 0 0 1 3 1.25a1 1 0 0 0 1.42 0a4.27 4.27 0 0 1 6 6.05Z" />
                     </svg>
-                    <h5 className="text-muted">No orders yet</h5>
+                    <h5 className="text-muted">Your wishlist is empty</h5>
                     <p className="text-muted">
-                      Start shopping to see your orders here
+                      Add products to your wishlist to save them for later
                     </p>
                     <button
                       className="btn btn-primary"
                       onClick={() => router.push("/")}
                     >
-                      Continue Shopping
+                      Start Shopping
                     </button>
-                  </div>
-                </div>
-              </div>
-            )}
-
-            {/* Addresses Tab */}
-            {activeTab === "addresses" && (
-              <div className="card shadow-sm">
-                <div className="card-body">
-                  <h4 className="card-title mb-4">My Addresses</h4>
-                  <div className="text-center py-5">
-                    <svg
-                      width="100"
-                      height="100"
-                      className="text-muted mb-3"
-                      fill="currentColor"
-                      viewBox="0 0 24 24"
-                    >
-                      <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" />
-                    </svg>
-                    <h5 className="text-muted">No saved addresses</h5>
-                    <p className="text-muted">
-                      Add an address for faster checkout
-                    </p>
-                    <button className="btn btn-primary">Add New Address</button>
                   </div>
                 </div>
               </div>
@@ -321,15 +375,58 @@ export default function AccountPage() {
             {activeTab === "security" && (
               <div className="card shadow-sm">
                 <div className="card-body">
-                  <h4 className="card-title mb-4">Change Password</h4>
+                  <h4 className="card-title mb-4">Security Settings</h4>
 
-                  <button
-                    onClick={() => router.push("/auth/forgot-password")}
-                    className="btn btn-primary"
-                    disabled={loading}
-                  >
-                    {loading ? "Changing..." : "Change Password"}
-                  </button>
+                  <div className="mb-4">
+                    <h5 className="h6 mb-3">Change Password</h5>
+                    <p className="text-muted mb-3">
+                      To change your password, we'll send you a password reset
+                      link to your email address.
+                    </p>
+                    <button
+                      onClick={() => router.push("/auth/forgot-password")}
+                      className="btn btn-primary"
+                      disabled={loading}
+                    >
+                      Send Password Reset Link
+                    </button>
+                  </div>
+
+                  <hr />
+
+                  <div className="mb-4">
+                    <h5 className="h6 mb-3">Two-Factor Authentication</h5>
+                    <p className="text-muted mb-3">
+                      Add an extra layer of security to your account
+                    </p>
+                    <button className="btn btn-outline-primary" disabled>
+                      Enable 2FA (Coming Soon)
+                    </button>
+                  </div>
+
+                  <hr />
+
+                  <div>
+                    <h5 className="h6 mb-3 text-danger">Danger Zone</h5>
+                    <p className="text-muted mb-3">
+                      Once you delete your account, there is no going back.
+                      Please be certain.
+                    </p>
+                    <button
+                      className="btn btn-outline-danger"
+                      onClick={() => {
+                        if (
+                          confirm(
+                            "Are you sure you want to delete your account? This action cannot be undone.",
+                          )
+                        ) {
+                          alert("Account deletion feature coming soon");
+                        }
+                      }}
+                    >
+                      Delete Account
+                    </button>
+                  </div>
                 </div>
               </div>
             )}
@@ -339,5 +436,21 @@ export default function AccountPage() {
 
       <Footer />
     </>
+  );
+}
+
+export default function AccountPage() {
+  return (
+    <Suspense
+      fallback={
+        <div className="min-vh-100 d-flex align-items-center justify-content-center">
+          <div className="spinner-border text-primary" role="status">
+            <span className="visually-hidden">Loading...</span>
+          </div>
+        </div>
+      }
+    >
+      <AccountPageContent />
+    </Suspense>
   );
 }

@@ -34,9 +34,10 @@ export async function GET() {
   }
 
   try {
-    // Get or create cart
-    let cart = await prisma.cart.findUnique({
+    const cart = await prisma.cart.upsert({
       where: { userId: user.id },
+      update: {},
+      create: { userId: user.id },
       include: {
         items: {
           include: {
@@ -53,29 +54,6 @@ export async function GET() {
         },
       },
     });
-
-    if (!cart) {
-      cart = await prisma.cart.create({
-        data: {
-          userId: user.id,
-        },
-        include: {
-          items: {
-            include: {
-              product: {
-                select: {
-                  id: true,
-                  title: true,
-                  name: true,
-                  priceCents: true,
-                  image: true,
-                },
-              },
-            },
-          },
-        },
-      });
-    }
 
     return NextResponse.json({ items: cart.items });
   } catch (error) {
@@ -119,9 +97,7 @@ export async function DELETE() {
   try {
     await prisma.cartItem.deleteMany({
       where: {
-        cart: {
-          userId: user.id,
-        },
+        cart: { userId: user.id },
       },
     });
 
