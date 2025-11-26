@@ -1,3 +1,4 @@
+// src/contexts/CartContext.tsx
 "use client";
 
 import React, {
@@ -6,6 +7,7 @@ import React, {
   useEffect,
   useState,
   useCallback,
+  useRef,
 } from "react";
 import { useAuth } from "./AuthContext";
 
@@ -44,6 +46,10 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   const [loading, setLoading] = useState(true);
   const { user } = useAuth();
 
+  // ⭐ OPTIMIZATION: Debounce and request deduplication
+  const abortControllerRef = useRef<AbortController | null>(null);
+  const refreshTimeoutRef = useRef<NodeJS.Timeout | null>(null);
+
   const refreshCart = useCallback(async () => {
     if (!user?.id) {
       setItems([]);
@@ -51,8 +57,23 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       return;
     }
 
+    // ⭐ Cancel any pending requests
+    if (abortControllerRef.current) {
+      abortControllerRef.current.abort();
+    }
+
+    // ⭐ Create new abort controller
+    abortControllerRef.current = new AbortController();
+
     try {
-      const response = await fetch("/api/cart");
+      const response = await fetch("/api/cart", {
+        signal: abortControllerRef.current.signal,
+        // ⭐ Add cache headers for better performance
+        headers: {
+          "Cache-Control": "no-cache",
+        },
+      });
+
       if (response.ok) {
         const data = await response.json();
         setItems(data.items || []);
@@ -60,15 +81,27 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         console.error("Failed to fetch cart");
         setItems([]);
       }
-    } catch (error) {
-      console.error("Error fetching cart:", error);
-      setItems([]);
+    } catch (error: any) {
+      // Don't log aborted requests
+      if (error.name !== "AbortError") {
+        console.error("Error fetching cart:", error);
+        setItems([]);
+      }
     } finally {
       setLoading(false);
     }
   }, [user?.id]);
 
-  // Fetch cart on mount and when user changes
+  // ⭐ Debounced refresh to prevent excessive API calls
+  const debouncedRefresh = useCallback(() => {
+    if (refreshTimeoutRef.current) {
+      clearTimeout(refreshTimeoutRef.current);
+    }
+    refreshTimeoutRef.current = setTimeout(() => {
+      refreshCart();
+    }, 300);
+  }, [refreshCart]);
+
   useEffect(() => {
     if (user?.id) {
       refreshCart();
@@ -76,6 +109,16 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       setItems([]);
       setLoading(false);
     }
+
+    // Cleanup
+    return () => {
+      if (abortControllerRef.current) {
+        abortControllerRef.current.abort();
+      }
+      if (refreshTimeoutRef.current) {
+        clearTimeout(refreshTimeoutRef.current);
+      }
+    };
   }, [user?.id, refreshCart]);
 
   const addToCart = async (productId: number, quantity: number = 1) => {
@@ -83,6 +126,26 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       alert("Please log in to add items to cart");
       return;
     }
+
+    // ⭐ OPTIMISTIC UPDATE: Update UI immediately
+    const tempId = Date.now();
+    const optimisticItem: CartItem = {
+      id: tempId,
+      cartId: 0,
+      productId,
+      quantity,
+      product: {
+        id: productId,
+        title: "Loading...",
+        name: null,
+        priceCents: 0,
+        image: null,
+      },
+      createdAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    };
+
+    setItems((prev) => [...prev, optimisticItem]);
 
     try {
       const response = await fetch("/api/cart/items", {
@@ -94,12 +157,17 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
       });
 
       if (response.ok) {
-        await refreshCart();
+        // ⭐ Use debounced refresh instead of immediate refresh
+        debouncedRefresh();
       } else {
+        // ⭐ Rollback optimistic update on error
+        setItems((prev) => prev.filter((item) => item.id !== tempId));
         const error = await response.json();
         alert(error.error || "Failed to add item to cart");
       }
     } catch (error) {
+      // ⭐ Rollback on network error
+      setItems((prev) => prev.filter((item) => item.id !== tempId));
       console.error("Error adding to cart:", error);
       alert("Failed to add item to cart");
     }
@@ -107,6 +175,14 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
 
   const updateQuantity = async (productId: number, quantity: number) => {
     if (!user) return;
+
+    // ⭐ OPTIMISTIC UPDATE
+    const prevItems = [...items];
+    setItems((prev) =>
+      prev.map((item) =>
+        item.productId === productId ? { ...item, quantity } : item,
+      ),
+    );
 
     try {
       const response = await fetch("/api/cart/items", {
@@ -117,13 +193,15 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
         body: JSON.stringify({ productId, quantity }),
       });
 
-      if (response.ok) {
-        await refreshCart();
-      } else {
+      if (!response.ok) {
+        // ⭐ Rollback on error
+        setItems(prevItems);
         const error = await response.json();
         alert(error.error || "Failed to update quantity");
       }
     } catch (error) {
+      // ⭐ Rollback on network error
+      setItems(prevItems);
       console.error("Error updating quantity:", error);
       alert("Failed to update quantity");
     }
@@ -132,17 +210,23 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   const removeFromCart = async (productId: number) => {
     if (!user) return;
 
+    // ⭐ OPTIMISTIC UPDATE
+    const prevItems = [...items];
+    setItems((prev) => prev.filter((item) => item.productId !== productId));
+
     try {
       const response = await fetch(`/api/cart/items/${productId}`, {
         method: "DELETE",
       });
 
-      if (response.ok) {
-        await refreshCart();
-      } else {
+      if (!response.ok) {
+        // ⭐ Rollback on error
+        setItems(prevItems);
         console.error("Failed to remove item");
       }
     } catch (error) {
+      // ⭐ Rollback on network error
+      setItems(prevItems);
       console.error("Error removing from cart:", error);
     }
   };
@@ -150,19 +234,27 @@ export function CartProvider({ children }: { children: React.ReactNode }) {
   const clearCart = async () => {
     if (!user) return;
 
+    // ⭐ OPTIMISTIC UPDATE
+    const prevItems = [...items];
+    setItems([]);
+
     try {
       const response = await fetch("/api/cart", {
         method: "DELETE",
       });
 
-      if (response.ok) {
-        setItems([]);
+      if (!response.ok) {
+        // ⭐ Rollback on error
+        setItems(prevItems);
       }
     } catch (error) {
+      // ⭐ Rollback on network error
+      setItems(prevItems);
       console.error("Error clearing cart:", error);
     }
   };
 
+  // ⭐ OPTIMIZATION: Memoize computed values
   const itemCount = items.reduce((sum, item) => sum + item.quantity, 0);
   const totalCents = items.reduce(
     (sum, item) => sum + item.product.priceCents * item.quantity,

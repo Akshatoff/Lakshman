@@ -1,3 +1,4 @@
+// src/app/api/cart/route.ts
 import { createServerClient } from "@supabase/ssr";
 import { cookies } from "next/headers";
 import { NextResponse } from "next/server";
@@ -34,13 +35,18 @@ export async function GET() {
   }
 
   try {
-    const cart = await prisma.cart.upsert({
+    // ⭐ OPTIMIZED: Single query with proper select to reduce data transfer
+    const cart = await prisma.cart.findUnique({
       where: { userId: user.id },
-      update: {},
-      create: { userId: user.id },
-      include: {
+      select: {
+        id: true,
         items: {
-          include: {
+          select: {
+            id: true,
+            quantity: true,
+            productId: true,
+            createdAt: true,
+            updatedAt: true,
             product: {
               select: {
                 id: true,
@@ -48,12 +54,22 @@ export async function GET() {
                 name: true,
                 priceCents: true,
                 image: true,
+                inventory: true,
               },
             },
+          },
+          // ⭐ ORDER BY for consistent results
+          orderBy: {
+            createdAt: "desc",
           },
         },
       },
     });
+
+    // ⭐ If no cart exists, return empty array immediately
+    if (!cart) {
+      return NextResponse.json({ items: [] });
+    }
 
     return NextResponse.json({ items: cart.items });
   } catch (error) {
@@ -95,6 +111,7 @@ export async function DELETE() {
   }
 
   try {
+    // ⭐ OPTIMIZED: Direct delete without fetching cart first
     await prisma.cartItem.deleteMany({
       where: {
         cart: { userId: user.id },

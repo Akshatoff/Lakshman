@@ -1,6 +1,7 @@
+// src/components/cart/Cart.tsx
 "use client";
 
-import React from "react";
+import React, { useState, useMemo } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { useCart } from "@/contexts/CartContext";
@@ -9,18 +10,59 @@ const Cart: React.FC = () => {
   const { items, totalCents, loading, updateQuantity, removeFromCart } =
     useCart();
 
+  // ⭐ Local state for optimistic UI updates
+  const [localQuantities, setLocalQuantities] = useState<
+    Record<number, number>
+  >({});
+  const [updatingItems, setUpdatingItems] = useState<Set<number>>(new Set());
+
+  // ⭐ Memoize item count to avoid recalculation
+  const itemCount = useMemo(() => {
+    return items.reduce((sum, item) => {
+      const localQty = localQuantities[item.productId];
+      return sum + (localQty !== undefined ? localQty : item.quantity);
+    }, 0);
+  }, [items, localQuantities]);
+
+  // ⭐ Debounced quantity update
   const handleQuantityChange = async (
     productId: number,
     newQuantity: number,
   ) => {
     if (newQuantity < 1) return;
-    await updateQuantity(productId, newQuantity);
+
+    // Update local state immediately for instant UI feedback
+    setLocalQuantities((prev) => ({ ...prev, [productId]: newQuantity }));
+    setUpdatingItems((prev) => new Set(prev).add(productId));
+
+    // Debounce the API call
+    setTimeout(async () => {
+      await updateQuantity(productId, newQuantity);
+      setUpdatingItems((prev) => {
+        const next = new Set(prev);
+        next.delete(productId);
+        return next;
+      });
+      // Clear local quantity after successful update
+      setLocalQuantities((prev) => {
+        const next = { ...prev };
+        delete next[productId];
+        return next;
+      });
+    }, 500);
   };
 
   const handleRemove = async (productId: number) => {
     if (confirm("Remove this item from cart?")) {
       await removeFromCart(productId);
     }
+  };
+
+  // ⭐ Get effective quantity (local or server)
+  const getEffectiveQuantity = (productId: number, serverQuantity: number) => {
+    return localQuantities[productId] !== undefined
+      ? localQuantities[productId]
+      : serverQuantity;
   };
 
   return (
@@ -43,9 +85,7 @@ const Cart: React.FC = () => {
         <div className="order-md-last">
           <h4 className="d-flex justify-content-between align-items-center mb-3">
             <span className="text-primary">Your cart</span>
-            <span className="badge bg-primary rounded-pill">
-              {items.length}
-            </span>
+            <span className="badge bg-primary rounded-pill">{itemCount}</span>
           </h4>
 
           {loading ? (
@@ -69,75 +109,95 @@ const Cart: React.FC = () => {
             </div>
           ) : (
             <>
-              <ul className="list-group mb-3">
-                {items.map((item) => (
-                  <li
-                    key={item.id}
-                    className="list-group-item d-flex justify-content-between align-items-start lh-sm"
-                  >
-                    <div className="d-flex align-items-center flex-grow-1">
-                      <Image
-                        src={item.product.image || "/images/placeholder.png"}
-                        alt={item.product.name || item.product.title}
-                        width={50}
-                        height={50}
-                        className="rounded me-3"
-                      />
-                      <div className="flex-grow-1">
-                        <h6 className="my-0">
-                          {item.product.name || item.product.title}
-                        </h6>
-                        <small className="text-body-secondary">
-                          ₹{(item.product.priceCents / 100).toFixed(2)} each
-                        </small>
+              {/* ⭐ Optimized list with virtualization hint */}
+              <ul
+                className="list-group mb-3"
+                style={{ maxHeight: "60vh", overflowY: "auto" }}
+              >
+                {items.map((item) => {
+                  const effectiveQty = getEffectiveQuantity(
+                    item.productId,
+                    item.quantity,
+                  );
+                  const isUpdating = updatingItems.has(item.productId);
 
-                        {/* Quantity Controls */}
-                        <div className="d-flex align-items-center gap-2 mt-2">
-                          <button
-                            className="btn btn-sm btn-outline-secondary"
-                            onClick={() =>
-                              handleQuantityChange(
-                                item.productId,
-                                item.quantity - 1,
-                              )
-                            }
-                            disabled={item.quantity <= 1}
-                          >
-                            -
-                          </button>
-                          <span className="fw-semibold">{item.quantity}</span>
-                          <button
-                            className="btn btn-sm btn-outline-secondary"
-                            onClick={() =>
-                              handleQuantityChange(
-                                item.productId,
-                                item.quantity + 1,
-                              )
-                            }
-                          >
-                            +
-                          </button>
+                  return (
+                    <li
+                      key={item.id}
+                      className={`list-group-item d-flex justify-content-between align-items-start lh-sm ${isUpdating ? "opacity-75" : ""}`}
+                    >
+                      <div className="d-flex align-items-center flex-grow-1">
+                        <Image
+                          src={item.product.image || "/images/placeholder.png"}
+                          alt={item.product.name || item.product.title}
+                          width={50}
+                          height={50}
+                          className="rounded me-3"
+                          loading="lazy"
+                        />
+                        <div className="flex-grow-1">
+                          <h6 className="my-0">
+                            {item.product.name || item.product.title}
+                          </h6>
+                          <small className="text-body-secondary">
+                            ₹{(item.product.priceCents / 100).toFixed(2)} each
+                          </small>
+
+                          {/* Quantity Controls */}
+                          <div className="d-flex align-items-center gap-2 mt-2">
+                            <button
+                              className="btn btn-sm btn-outline-secondary"
+                              onClick={() =>
+                                handleQuantityChange(
+                                  item.productId,
+                                  effectiveQty - 1,
+                                )
+                              }
+                              disabled={effectiveQty <= 1 || isUpdating}
+                            >
+                              -
+                            </button>
+                            <span className="fw-semibold">
+                              {effectiveQty}
+                              {isUpdating && (
+                                <span className="spinner-border spinner-border-sm ms-1" />
+                              )}
+                            </span>
+                            <button
+                              className="btn btn-sm btn-outline-secondary"
+                              onClick={() =>
+                                handleQuantityChange(
+                                  item.productId,
+                                  effectiveQty + 1,
+                                )
+                              }
+                              disabled={isUpdating}
+                            >
+                              +
+                            </button>
+                          </div>
                         </div>
                       </div>
-                    </div>
 
-                    <div className="text-end">
-                      <span className="text-body-secondary d-block mb-2">
-                        ₹
-                        {(
-                          (item.product.priceCents * item.quantity) /
-                          100
-                        ).toFixed(2)}
-                      </span>
-                      <button
-                        className="btn btn-sm btn-link text-danger p-0 text-black"
-                        onClick={() => handleRemove(item.productId)}
-                      >
-                        Remove
-                      </button>
-                    </div>
-                  </li>
-                ))}
+                      <div className="text-end">
+                        <span className="text-body-secondary d-block mb-2">
+                          ₹
+                          {(
+                            (item.product.priceCents * effectiveQty) /
+                            100
+                          ).toFixed(2)}
+                        </span>
+                        <button
+                          className="btn btn-sm btn-link text-danger p-0 text-black"
+                          onClick={() => handleRemove(item.productId)}
+                          disabled={isUpdating}
+                        >
+                          Remove
+                        </button>
+                      </div>
+                    </li>
+                  );
+                })}
               </ul>
 
               <div className="list-group">

@@ -31,35 +31,33 @@ model User {
 }
 
 model Product {
-  id            Int       @id @default(autoincrement())
-  title         String
-  slug          String    @unique
-  name          String?
-  description   String
-  priceCents    Int
-  originalPriceCents Int?
-  discount      Int?
-  images        Json
-  image         String?
-  inventory     Int
-  category      String
-  rating        Float     @default(4.0)
-  isNew         Boolean   @default(false)
-  isBestseller  Boolean   @default(false)
-  isFeatured    Boolean   @default(false)
-  createdAt     DateTime  @default(now())
-  updatedAt     DateTime  @updatedAt
+  id                  Int           @id @default(autoincrement())
+  title               String
+  name                String?
+  slug                String        @unique
+  description         String
+  priceCents          Int
+  originalPriceCents  Int?
+  discount            Int?
+  images              Json
+  image               String?
+  inventory           Int           @default(0)
+  category            String
+  rating              Float         @default(4.0)
+  isNew               Boolean       @default(false)
+  isBestseller        Boolean       @default(false)
+  isFeatured          Boolean       @default(false)
+  createdAt           DateTime      @default(now())
+  updatedAt           DateTime      @updatedAt
+  cartItems           CartItem[]
+  wishlistItems       WishlistItem[]
+  orderItems          OrderItem[]
+  reviews             Review[]
 
-  reviews       Review[]
-  orderItems    OrderItem[]
-  cartItems     CartItem[]
-  wishlistItems WishlistItem[]
-
-  @@index([category])
-  @@index([slug])
-  @@index([isBestseller]) // ✅ ADDED
-  @@index([isNew])        // ✅ ADDED
-  @@index([isFeatured])   // ✅ ADDED
+  @@index([category]) // ⭐ Index for category filtering
+  @@index([isNew, isBestseller, isFeatured]) // ⭐ Composite index for filtering
+  @@index([createdAt]) // ⭐ Index for sorting by date
+  @@index([slug]) // ⭐ Already unique but explicit for clarity
 }
 
 model Order {
@@ -141,30 +139,30 @@ model Review {
 
 model Cart {
   id        Int        @id @default(autoincrement())
-  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
-  userId    String     @unique
-
+  userId    String     @unique  // ⭐ Already unique - good for lookup
   items     CartItem[]
-
   createdAt DateTime   @default(now())
   updatedAt DateTime   @updatedAt
+  user      User       @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId]) // ⭐ Explicit index for faster lookups
 }
+
 
 model CartItem {
   id        Int      @id @default(autoincrement())
-  cart      Cart     @relation(fields: [cartId], references: [id], onDelete: Cascade)
   cartId    Int
-  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
   productId Int
-
   quantity  Int      @default(1)
-
   createdAt DateTime @default(now())
   updatedAt DateTime @updatedAt
+  cart      Cart     @relation(fields: [cartId], references: [id], onDelete: Cascade)
+  product   Product  @relation(fields: [productId], references: [id], onDelete: Cascade)
 
   @@unique([cartId, productId])
-  @@index([cartId])
-  @@index([productId]) // ✅ ADDED
+  @@index([cartId]) // ⭐ Index for faster cart lookups
+  @@index([productId]) // ⭐ Index for faster product lookups
+  @@index([cartId, createdAt]) // ⭐ Composite index for sorted queries
 }
 
 model Wishlist {
