@@ -134,7 +134,10 @@ export default function OrderDetailPage({
     return (
       <>
         <Header />
-        <div className="container py-5 text-center" style={{ minHeight: "60vh" }}>
+        <div
+          className="container py-5 text-center"
+          style={{ minHeight: "60vh" }}
+        >
           <div className="spinner-border text-primary" role="status">
             <span className="visually-hidden">Loading...</span>
           </div>
@@ -148,7 +151,10 @@ export default function OrderDetailPage({
     return (
       <>
         <Header />
-        <div className="container py-5 text-center" style={{ minHeight: "60vh" }}>
+        <div
+          className="container py-5 text-center"
+          style={{ minHeight: "60vh" }}
+        >
           <div className="alert alert-danger">{error || "Order not found"}</div>
           <Link href="/account?tab=orders" className="btn btn-primary">
             View All Orders
@@ -169,8 +175,8 @@ export default function OrderDetailPage({
           <div className="alert alert-success alert-dismissible fade show mb-4">
             <h5 className="alert-heading">Order Placed Successfully!</h5>
             <p className="mb-0">
-              Thank you for your order. We've sent a confirmation email with your
-              order details.
+              Thank you for your order. We&apos;ve sent a confirmation email
+              with your order details.
             </p>
             <button
               type="button"
@@ -187,7 +193,8 @@ export default function OrderDetailPage({
               <div>
                 <h2 className="mb-2">Order #{order.orderNumber}</h2>
                 <p className="text-muted mb-1">
-                  Placed on {new Date(order.createdAt).toLocaleDateString("en-IN", {
+                  Placed on{" "}
+                  {new Date(order.createdAt).toLocaleDateString("en-IN", {
                     year: "numeric",
                     month: "long",
                     day: "numeric",

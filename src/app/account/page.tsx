@@ -380,7 +380,7 @@ function AccountPageContent() {
                   <div className="mb-4">
                     <h5 className="h6 mb-3">Change Password</h5>
                     <p className="text-muted mb-3">
-                      To change your password, we'll send you a password reset
+                      To change your password, we&apos;ll send you a password reset
                       link to your email address.
                     </p>
                     <button
