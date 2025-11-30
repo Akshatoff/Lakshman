@@ -40,6 +40,12 @@ const AdminDashboard: React.FC = () => {
   const [imageFile, setImageFile] = useState<File | null>(null);
   const [imagePreview, setImagePreview] = useState<string>("");
   const [checkingAccess, setCheckingAccess] = useState(true);
+  const [showCategoryModal, setShowCategoryModal] = useState(false);
+  const [editingCategory, setEditingCategory] = useState<Category | null>(null);
+  const [newCategory, setNewCategory] = useState({
+    name: "",
+    image: "",
+  });
 
   const [productForm, setProductForm] = useState({
     name: "",
@@ -67,25 +73,25 @@ const AdminDashboard: React.FC = () => {
 
       // Check if user has admin role
       try {
-              // Fetch user role from your Prisma database
-              const response = await fetch('/api/user/role');
-              const data = await response.json();
-              
-              console.log('User role from database:', data.role);
-              
-              if (data.role !== "ADMIN" && data.role !== "admin") {
-                // Not an admin, redirect to home
-                alert("Access denied. Admin privileges required.");
-                router.push("/");
-                return;
-              }
-      
-              setCheckingAccess(false);
-            } catch (error) {
-              console.error('Error checking admin access:', error);
-              alert("Error verifying access. Please try again.");
-              router.push("/");
-            }
+        // Fetch user role from your Prisma database
+        const response = await fetch("/api/user/role");
+        const data = await response.json();
+
+        console.log("User role from database:", data.role);
+
+        if (data.role !== "ADMIN" && data.role !== "admin") {
+          // Not an admin, redirect to home
+          alert("Access denied. Admin privileges required.");
+          router.push("/");
+          return;
+        }
+
+        setCheckingAccess(false);
+      } catch (error) {
+        console.error("Error checking admin access:", error);
+        alert("Error verifying access. Please try again.");
+        router.push("/");
+      }
     };
 
     checkAdminAccess();
@@ -303,6 +309,57 @@ const AdminDashboard: React.FC = () => {
       ...prev,
       [name]: type === "checkbox" ? checked : value,
     }));
+  };
+
+  // Add category handlers near product handlers (around line 213-254)
+  const handleCategorySubmit = async (e: React.FormEvent) => {
+    e.preventDefault();
+    try {
+      const method = editingCategory ? "PUT" : "POST";
+      const body = editingCategory
+        ? { ...newCategory, id: editingCategory.id }
+        : newCategory;
+
+      const response = await fetch("/api/categories", {
+        method,
+        headers: {
+          "Content-Type": "application/json",
+        },
+        body: JSON.stringify(body),
+      });
+
+      const result = await response.json();
+      if (result.success) {
+        loadData();
+        setShowCategoryModal(false);
+        setNewCategory({ name: "", image: "" });
+        alert(editingCategory ? "Category updated!" : "Category added!");
+      } else {
+        alert(result.error || "Failed to save category");
+      }
+    } catch (error) {
+      console.error("Error saving category:", error);
+      alert("Failed to save category");
+    }
+  };
+
+  const handleDeleteCategory = async (categoryId: string) => {
+    if (!confirm("Delete this category?")) return;
+    try {
+      const response = await fetch(`/api/categories?id=${categoryId}`, {
+        method: "DELETE",
+      });
+      const result = await response.json();
+      if (result.success) {
+        loadData();
+        alert("Category deleted!");
+      } else {
+        alert(result.error || "Failed to delete category");
+      }
+    } catch (error) {
+      console.error("Error deleting category:", error);
+      alert("Failed to delete category");
+    }
   };
 
   if (loading) {
@@ -543,30 +600,68 @@ const AdminDashboard: React.FC = () => {
                 </div>
               </div>
             )}
-
             {activeTab === "categories" && (
               <div className="card">
-                <div className="card-header bg-white">
+                <div className="card-header bg-white d-flex justify-content-between align-items-center">
                   <h5 className="mb-0">Categories Management</h5>
+                  <button
+                    className="btn btn-primary"
+                    onClick={() => {
+                      setNewCategory({ name: "", image: "" });
+                      setEditingCategory(null);
+                      setShowCategoryModal(true);
+                    }}
+                  >
+                    <svg
+                      width="20"
+                      height="20"
+                      fill="currentColor"
+                      className="me-2"
+                      viewBox="0 0 24 24"
+                    >
+                      <path d="M19 11h-6V5a1 1 0 0 0-2 0v6H5a1 1 0 0 0 0 2h6v6a1 1 0 0 0 2 0v-6h6a1 1 0 0 0 0-2Z" />
+                    </svg>
+                    Add Category
+                  </button>
                 </div>
                 <div className="card-body">
-                  <div className="row">
+                  <div className="row row-cols-1 row-cols-md-3 g-4">
                     {categories.map((category) => (
-                      <div key={category.id} className="col-md-4 mb-3">
-                        <div className="card">
+                      <div key={category.id} className="col">
+                        <div className="card h-100">
                           <Image
                             src={category.image}
                             alt={category.name}
                             width={300}
                             height={200}
                             className="card-img-top"
-                            unoptimized={category.image.startsWith("http")}
+                            style={{ height: "200px", objectFit: "cover" }}
                           />
                           <div className="card-body">
-                            <h6 className="card-title">{category.name}</h6>
-                            <p className="text-muted small">
-                              ID: {category.id}
-                            </p>
+                            <h5 className="card-title">{category.name}</h5>
+                            <div className="d-flex gap-2 mt-3">
+                              <button
+                                className="btn btn-sm btn-outline-primary"
+                                onClick={() => {
+                                  setEditingCategory(category);
+                                  setNewCategory({
+                                    name: category.name,
+                                    image: category.image,
+                                  });
+                                  setShowCategoryModal(true);
+                                }}
+                              >
+                                Edit
+                              </button>
+                              <button
+                                className="btn btn-sm btn-outline-danger"
+                                onClick={() =>
+                                  handleDeleteCategory(category.id)
+                                }
+                              >
+                                Delete
+                              </button>
+                            </div>
                           </div>
                         </div>
                       </div>
@@ -579,6 +674,71 @@ const AdminDashboard: React.FC = () => {
         </div>
       </div>
 
+      {showCategoryModal && (
+        <div
+          className="modal show d-block"
+          tabIndex={-1}
+          style={{ backgroundColor: "rgba(0,0,0,0.5)" }}
+        >
+          <div className="modal-dialog modal-dialog-centered">
+            <div className="modal-content">
+              <div className="modal-header">
+                <h5 className="modal-title">
+                  {editingCategory ? "Edit Category" : "Add New Category"}
+                </h5>
+                <button
+                  type="button"
+                  className="btn-close"
+                  onClick={() => setShowCategoryModal(false)}
+                ></button>
+              </div>
+              <form onSubmit={handleCategorySubmit}>
+                <div className="modal-body">
+                  <div className="mb-3">
+                    <label className="form-label">Category Name</label>
+                    <input
+                      type="text"
+                      className="form-control"
+                      value={newCategory.name}
+                      onChange={(e) =>
+                        setNewCategory({ ...newCategory, name: e.target.value })
+                      }
+                      required
+                    />
+                  </div>
+                  <div className="mb-3">
+                    <label className="form-label">Image URL</label>
+                    <input
+                      type="url"
+                      className="form-control"
+                      value={newCategory.image}
+                      onChange={(e) =>
+                        setNewCategory({
+                          ...newCategory,
+                          image: e.target.value,
+                        })
+                      }
+                      required
+                    />
+                  </div>
+                </div>
+                <div className="modal-footer">
+                  <button
+                    type="button"
+                    className="btn btn-secondary"
+                    onClick={() => setShowCategoryModal(false)}
+                  >
+                    Cancel
+                  </button>
+                  <button type="submit" className="btn btn-primary">
+                    {editingCategory ? "Update" : "Create"}
+                  </button>
+                </div>
+              </form>
+            </div>
+          </div>
+        </div>
+      )}
       {/* Product Modal */}
       {showProductModal && (
         <div

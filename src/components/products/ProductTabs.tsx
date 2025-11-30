@@ -6,7 +6,6 @@ import Link from "next/link";
 import { Swiper, SwiperSlide } from "swiper/react";
 import { Navigation, Grid } from "swiper/modules";
 import { useCart } from "@/contexts/CartContext";
-import { useWishlist } from "@/contexts/WishlistContext";
 
 // Import Swiper styles
 import "swiper/css";
@@ -41,7 +40,6 @@ const ProductTabs: React.FC<ProductTabsProps> = ({ products }) => {
   const [activeTab, setActiveTab] = useState("all");
   const [quantities, setQuantities] = useState<{ [key: number]: number }>({});
   const { addToCart } = useCart();
-  const { isInWishlist, addToWishlist, removeFromWishlist } = useWishlist();
 
   // Filter products based on active tab
   const filteredProducts = useMemo(() => {

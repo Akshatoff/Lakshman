@@ -20,7 +20,7 @@ const slides: Slide[] = [
     title: "Men's Lightweight Fleece Trousers",
     description:"",
     buttonText: "Shop Now",
-    buttonLink: "#products",
+    buttonLink: "/products",
   },
   {
     id: 2,
@@ -29,16 +29,16 @@ const slides: Slide[] = [
     title: "Tops and T-shirts Collection",
     description:"",
     buttonText: "Shop Now",
-    buttonLink: "#products",
+    buttonLink: "/products",
   },
   {
     id: 3,
     backgroundImage: "/images/banner-3.jpg",
-    discount: "",
-    title: "",
+    discount: "10% off",
+    title: "Kurta's Collection",
     description: "",
-    buttonText: "",
-    buttonLink: "#products",
+    buttonText: "Shop Now",
+    buttonLink: "/products",
   },
 ];
 

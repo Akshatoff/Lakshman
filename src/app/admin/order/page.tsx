@@ -219,7 +219,7 @@ const AdminOrdersPage: React.FC = () => {
               </div>
               <div className="col-md-3">
                 <select
-                  className="form-select"
+                  className="form-select black"
                   value={filterStatus}
                   onChange={(e) => setFilterStatus(e.target.value)}
                 >
@@ -326,7 +326,7 @@ const AdminOrdersPage: React.FC = () => {
                           style={{
                             width: "auto",
                             border: "none",
-                            color: "white",
+                            color: "black",
                           }}
                         >
                           <option value="PENDING">Pending</option>
