@@ -205,13 +205,13 @@ export default function OrderDetailPage({
               </div>
               <div className="text-end">
                 <span
-                  className={`badge ${getStatusBadgeClass(order.status)} fs-6 mb-2`}
+                  className={`badge ${getStatusBadgeClass(order.status)} fs-6 mb-2 text-black`}
                 >
                   {order.status}
                 </span>
                 <br />
                 <span
-                  className={`badge ${getPaymentStatusBadgeClass(order.paymentStatus)} fs-6`}
+                  className={`badge ${getPaymentStatusBadgeClass(order.paymentStatus)} fs-6 text-black`}
                 >
                   Payment: {order.paymentStatus}
                 </span>
@@ -352,7 +352,7 @@ export default function OrderDetailPage({
                   <strong>Payment Status:</strong>
                 </p>
                 <span
-                  className={`badge ${getPaymentStatusBadgeClass(order.paymentStatus)}`}
+                  className={`badge ${getPaymentStatusBadgeClass(order.paymentStatus)} text-black`}
                 >
                   {order.paymentStatus}
                 </span>

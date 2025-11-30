@@ -91,7 +91,7 @@ export function OrdersTab() {
         <div className="d-flex justify-content-between align-items-center mb-4">
           <h4 className="card-title mb-0">My Orders</h4>
           <select
-            className="form-select w-auto"
+            className="form-select w-auto text-black"
             value={filterStatus}
             onChange={(e) => setFilterStatus(e.target.value)}
           >
@@ -189,7 +189,7 @@ export function OrdersTab() {
                     </td>
                     <td>
                       <span
-                        className={`badge ${getStatusBadgeClass(order.status)}`}
+                        className={`badge ${getStatusBadgeClass(order.status)} text-black`}
                       >
                         {order.status}
                       </span>
