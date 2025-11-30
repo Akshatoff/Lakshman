@@ -4,13 +4,14 @@ import React, { useState, useMemo } from "react";
 import Image from "next/image";
 import Link from "next/link";
 import { Swiper, SwiperSlide } from "swiper/react";
-import { Navigation } from "swiper/modules";
+import { Navigation, Grid } from "swiper/modules";
 import { useCart } from "@/contexts/CartContext";
 import { useWishlist } from "@/contexts/WishlistContext";
 
 // Import Swiper styles
 import "swiper/css";
 import "swiper/css/navigation";
+import "swiper/css/grid";
 
 interface Product {
   id: number;
@@ -208,12 +209,16 @@ const ProductTabs: React.FC<ProductTabsProps> = ({ products }) => {
                 </button>
               </div>
 
-              {/* Swiper Carousel */}
+              {/* Two-Row Swiper Carousel */}
               <div className="product-carousel" style={{ overflow: "hidden" }}>
                 <Swiper
-                  modules={[Navigation]}
+                  modules={[Navigation, Grid]}
                   slidesPerView={4}
                   spaceBetween={25}
+                  grid={{
+                    rows: 2,
+                    fill: "row",
+                  }}
                   speed={500}
                   loop={false}
                   grabCursor={true}
@@ -227,22 +232,42 @@ const ProductTabs: React.FC<ProductTabsProps> = ({ products }) => {
                     0: {
                       slidesPerView: 1,
                       spaceBetween: 15,
+                      grid: {
+                        rows: 2,
+                        fill: "row",
+                      },
                     },
                     576: {
                       slidesPerView: 2,
                       spaceBetween: 15,
+                      grid: {
+                        rows: 2,
+                        fill: "row",
+                      },
                     },
                     768: {
                       slidesPerView: 2,
                       spaceBetween: 20,
+                      grid: {
+                        rows: 2,
+                        fill: "row",
+                      },
                     },
                     991: {
                       slidesPerView: 3,
                       spaceBetween: 20,
+                      grid: {
+                        rows: 2,
+                        fill: "row",
+                      },
                     },
                     1200: {
                       slidesPerView: 4,
                       spaceBetween: 25,
+                      grid: {
+                        rows: 2,
+                        fill: "row",
+                      },
                     },
                   }}
                 >
