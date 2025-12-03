@@ -70,13 +70,26 @@ const ProductTabs: React.FC<ProductTabsProps> = ({ products }) => {
     setQuantities((prev) => ({ ...prev, [productId]: 1 }));
   };
 
-  const ProductCard = ({ product }: { product: Product }) => (
-    <div className="product-item" data-product-id={product.id}>
-      {product.discount && (
-        <span className="badge bg-success position-absolute m-3">
-          -{product.discount}%
-        </span>
-      )}
+  const ProductCard = ({ product }: { product: Product }) => {
+    const [loading, setLoading] = useState(false);
+
+    return (
+      <div className="product-item" data-product-id={product.id}>
+        {loading && (
+          <div className="loading-overlay">
+            <span>Loading...</span>
+          </div>
+        )}
+        {product.inventory === 0 && (
+          <span className="badge bg-danger position-absolute m-3">
+            Out of Stock
+          </span>
+        )}
+        {product.discount && (
+          <span className="badge bg-success position-absolute m-3">
+            -{product.discount}%
+          </span>
+        )}
 
       <Link href={`/product/${product.id}`} className="text-decoration-none">
         <figure>
@@ -137,10 +150,14 @@ const ProductTabs: React.FC<ProductTabsProps> = ({ products }) => {
         <a
           href="#"
           className="nav-link add-to-cart"
-          onClick={(e) => {
+          onClick={async (e) => {
             e.preventDefault();
-            handleAddToCart(product.id);
+            if (product.inventory === 0) return;
+            setLoading(true);
+            await handleAddToCart(product.id);
+            setLoading(false);
           }}
+          disabled={product.inventory === 0}
         >
           Add to Cart{" "}
           <svg
