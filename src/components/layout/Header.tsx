@@ -95,17 +95,17 @@ export default function Header() {
                        </a>
                        <ul className="dropdown-menu">
                          <li>
-                           <Link className="dropdown-item" href="/#products?category=men">
+                           <Link className="dropdown-item" href="/products?category=men">
                              Men
                            </Link>
                          </li>
                          <li>
-                           <Link className="dropdown-item" href="/#products?category=women">
+                           <Link className="dropdown-item" href="/products?category=women">
                              Women
                            </Link>
                          </li>
                          <li>
-                           <Link className="dropdown-item" href="/#products?category=kids">
+                           <Link className="dropdown-item" href="/products?category=kids">
                              Kids
                            </Link>
                          </li>
@@ -125,23 +125,23 @@ export default function Header() {
                        </a>
                        <ul className="dropdown-menu">
                          <li>
-                           <Link className="dropdown-item" href="/#products?category=running">
+                           <Link className="dropdown-item" href="/products?category=running">
                              Running
                            </Link>
                          </li>
                          <li>
-                           <Link className="dropdown-item" href="/#products?category=cricket">
+                           <Link className="dropdown-item" href="/products?category=cricket">
                              Cricket
                            </Link>
                          </li>
                          <li>
-                           <Link className="dropdown-item" href="/#products?category=football">
+                           <Link className="dropdown-item" href="/products?category=football">
                              Football
                            </Link>
                          </li>
                          <li>
-                           <Link className="dropdown-item" href="/#products?category=waskat">
-                             Waskat
+                           <Link className="dropdown-item" href="/products?category=waskat">
+                             Basketball
                            </Link>
                          </li>
                        </ul>
@@ -160,12 +160,12 @@ export default function Header() {
                        </a>
                        <ul className="dropdown-menu">
                          <li>
-                           <Link className="dropdown-item" href="/#products?category=sports-shoes">
+                           <Link className="dropdown-item" href="/products?category=sports-shoes">
                              Sports Shoes
                            </Link>
                          </li>
                          <li>
-                           <Link className="dropdown-item" href="/#products?category=casual-shoes">
+                           <Link className="dropdown-item" href="/products?category=casual-shoes">
                              Casual
                            </Link>
                          </li>
@@ -185,22 +185,22 @@ export default function Header() {
                        </a>
                        <ul className="dropdown-menu">
                          <li>
-                           <Link className="dropdown-item" href="/#products?category=bat">
+                           <Link className="dropdown-item" href="/products?category=bat">
                              Bat
                            </Link>
                          </li>
                          <li>
-                           <Link className="dropdown-item" href="/#products?category=ball">
+                           <Link className="dropdown-item" href="/products?category=ball">
                              Ball
                            </Link>
                          </li>
                          <li>
-                           <Link className="dropdown-item" href="/#products?category=gloves">
+                           <Link className="dropdown-item" href="/products?category=gloves">
                              Gloves
                            </Link>
                          </li>
                          <li>
-                           <Link className="dropdown-item" href="/#products?category=backpack">
+                           <Link className="dropdown-item" href="/products?category=backpack">
                              Backpack
                            </Link>
                          </li>
@@ -220,12 +220,12 @@ export default function Header() {
                        </a>
                        <ul className="dropdown-menu">
                          <li>
-                           <Link className="dropdown-item" href="/#products?category=home-furniture">
+                           <Link className="dropdown-item" href="/products?category=home-furniture">
                              Home
                            </Link>
                          </li>
                          <li>
-                           <Link className="dropdown-item" href="/#products?category=office-furniture">
+                           <Link className="dropdown-item" href="/products?category=office-furniture">
                              Office
                            </Link>
                          </li>
@@ -499,21 +499,21 @@ export default function Header() {
                    {mobileDropdowns.clothing && (
                      <div className="bg-light">
                        <Link
-                         href="/#products?category=men"
+                         href="/products?category=men"
                          className="d-block px-5 py-2 text-decoration-none text-dark"
                          onClick={closeMobileMenu}
                        >
                          Men
                        </Link>
                        <Link
-                         href="/#products?category=women"
+                         href="/products?category=women"
                          className="d-block px-5 py-2 text-decoration-none text-dark"
                          onClick={closeMobileMenu}
                        >
                          Women
                        </Link>
                        <Link
-                         href="/#products?category=kids"
+                         href="/products?category=kids"
                          className="d-block px-5 py-2 text-decoration-none text-dark"
                          onClick={closeMobileMenu}
                        >
@@ -550,28 +550,28 @@ export default function Header() {
                    {mobileDropdowns.sportswear && (
                      <div className="bg-light">
                        <Link
-                         href="/#products?category=running"
+                         href="/products?category=running"
                          className="d-block px-5 py-2 text-decoration-none text-dark"
                          onClick={closeMobileMenu}
                        >
                          Running
                        </Link>
                        <Link
-                         href="/#products?category=cricket"
+                         href="/products?category=cricket"
                          className="d-block px-5 py-2 text-decoration-none text-dark"
                          onClick={closeMobileMenu}
                        >
                          Cricket
                        </Link>
                        <Link
-                         href="/#products?category=football"
+                         href="/products?category=football"
                          className="d-block px-5 py-2 text-decoration-none text-dark"
                          onClick={closeMobileMenu}
                        >
                          Football
                        </Link>
                        <Link
-                         href="/#products?category=waskat"
+                         href="/products?category=waskat"
                          className="d-block px-5 py-2 text-decoration-none text-dark"
                          onClick={closeMobileMenu}
                        >
@@ -608,14 +608,14 @@ export default function Header() {
                    {mobileDropdowns.footwear && (
                      <div className="bg-light">
                        <Link
-                         href="/#products?category=sports-shoes"
+                         href="/products?category=sports-shoes"
                          className="d-block px-5 py-2 text-decoration-none text-dark"
                          onClick={closeMobileMenu}
                        >
                          Sports Shoes
                        </Link>
                        <Link
-                         href="/#products?category=casual-shoes"
+                         href="/products?category=casual-shoes"
                          className="d-block px-5 py-2 text-decoration-none text-dark"
                          onClick={closeMobileMenu}
                        >
@@ -652,28 +652,28 @@ export default function Header() {
                    {mobileDropdowns.accessories && (
                      <div className="bg-light">
                        <Link
-                         href="/#products?category=bat"
+                         href="/products?category=bat"
                          className="d-block px-5 py-2 text-decoration-none text-dark"
                          onClick={closeMobileMenu}
                        >
                          Bat
                        </Link>
                        <Link
-                         href="/#products?category=ball"
+                         href="/products?category=ball"
                          className="d-block px-5 py-2 text-decoration-none text-dark"
                          onClick={closeMobileMenu}
                        >
                          Ball
                        </Link>
                        <Link
-                         href="/#products?category=gloves"
+                         href="/products?category=gloves"
                          className="d-block px-5 py-2 text-decoration-none text-dark"
                          onClick={closeMobileMenu}
                        >
                          Gloves
                        </Link>
                        <Link
-                         href="/#products?category=backpack"
+                         href="/products?category=backpack"
                          className="d-block px-5 py-2 text-decoration-none text-dark"
                          onClick={closeMobileMenu}
                        >
@@ -685,7 +685,7 @@ export default function Header() {
 
                  {/* Furniture Link */}
                  <Link
-                   href="/#products?category=furniture"
+                   href="/products?category=furniture"
                    className="d-block px-3 py-3 text-decoration-none text-dark border-bottom"
                    onClick={closeMobileMenu}
                  >

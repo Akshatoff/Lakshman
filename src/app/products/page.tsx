@@ -37,20 +37,36 @@ interface Category {
 const categories = [
   { id: "all", name: "All Products", image: "/images/category-all.jpg" },
   { id: "men", name: "Men's Clothing", image: "/images/category-men.jpg" },
-  { id: "women", name: "Women's Clothing", image: "/images/category-women.jpg" },
+  {
+    id: "women",
+    name: "Women's Clothing",
+    image: "/images/category-women.jpg",
+  },
   { id: "kids", name: "Kids Clothing", image: "/images/category-kids.jpg" },
   { id: "running", name: "Running", image: "/images/category-running.jpg" },
   { id: "cricket", name: "Cricket", image: "/images/category-cricket.jpg" },
   { id: "football", name: "Football", image: "/images/category-football.jpg" },
-  { id: "waskat", name: "Waskat", image: "/images/category-waskat.jpg" },
-  { id: "sports-shoes", name: "Sports Shoes", image: "/images/category-sports-shoes.jpg" },
-  { id: "casual-shoes", name: "Casual Shoes", image: "/images/category-casual-shoes.jpg" },
-  { id: "bat", name: "Bats", image: "/images/category-bat.jpg" },
-  { id: "ball", name: "Balls", image: "/images/category-ball.jpg" },
+  { id: "basket", name: "Basketball", image: "/images/category-waskat.jpg" },
+  {
+    id: "sports",
+    name: "Sports Shoes",
+    image: "/images/category-sports-shoes.jpg",
+  },
+  {
+    id: "casual",
+    name: "Casual Shoes",
+    image: "/images/category-casual-shoes.jpg",
+  },
+  { id: "cricket-bat", name: "Bats", image: "/images/category-bat.jpg" },
+  { id: "cricket-ball", name: "Balls", image: "/images/category-ball.jpg" },
   { id: "gloves", name: "Gloves", image: "/images/category-gloves.jpg" },
   { id: "backpack", name: "Backpacks", image: "/images/category-backpack.jpg" },
-  { id: "home-furniture", name: "Home Furniture", image: "/images/category-home.jpg" },
-  { id: "office-furniture", name: "Office Furniture", image: "/images/category-office.jpg" },
+  { id: "home", name: "Home Furniture", image: "/images/category-home.jpg" },
+  {
+    id: "office",
+    name: "Office Furniture",
+    image: "/images/category-office.jpg",
+  },
 ];
 
 function ProductsPageContent() {
@@ -97,7 +113,7 @@ function ProductsPageContent() {
 
     // Filter by price range
     filtered = filtered.filter(
-      (p) => p.price >= priceRange[0] && p.price <= priceRange[1]
+      (p) => p.price >= priceRange[0] && p.price <= priceRange[1],
     );
 
     // Filter by rating
@@ -152,7 +168,10 @@ function ProductsPageContent() {
     return (
       <>
         <Header />
-        <div className="container py-5 text-center" style={{ minHeight: "60vh" }}>
+        <div
+          className="container py-5 text-center"
+          style={{ minHeight: "60vh" }}
+        >
           <div className="spinner-border text-primary" role="status">
             <span className="visually-hidden">Loading...</span>
           </div>
@@ -223,15 +242,13 @@ function ProductsPageContent() {
       {/* Category Filter Chips */}
       <section className="py-3 bg-light border-top border-bottom">
         <div className="container">
-                        <div className="d-flex gap-2 flex-wrap overflow-auto">
+          <div className="d-flex gap-2 flex-wrap overflow-auto">
             {categories.map((cat) => (
               <Link
                 key={cat.id}
                 href={`/products?category=${cat.id}`}
                 className={`btn ${
-                  category === cat.id
-                    ? "btn-primary"
-                    : "btn-outline-secondary"
+                  category === cat.id ? "btn-primary" : "btn-outline-secondary"
                 } btn-sm text-nowrap`}
               >
                 {cat.name}
@@ -261,7 +278,10 @@ function ProductsPageContent() {
                         placeholder="Min"
                         value={priceRange[0]}
                         onChange={(e) =>
-                          setPriceRange([parseInt(e.target.value) || 0, priceRange[1]])
+                          setPriceRange([
+                            parseInt(e.target.value) || 0,
+                            priceRange[1],
+                          ])
                         }
                       />
                       <input
@@ -270,7 +290,10 @@ function ProductsPageContent() {
                         placeholder="Max"
                         value={priceRange[1]}
                         onChange={(e) =>
-                          setPriceRange([priceRange[0], parseInt(e.target.value) || 50000])
+                          setPriceRange([
+                            priceRange[0],
+                            parseInt(e.target.value) || 50000,
+                          ])
                         }
                       />
                     </div>
@@ -286,7 +309,8 @@ function ProductsPageContent() {
                       }
                     />
                     <small className="text-muted">
-                      ₹{priceRange[0].toLocaleString()} - ₹{priceRange[1].toLocaleString()}
+                      ₹{priceRange[0].toLocaleString()} - ₹
+                      {priceRange[1].toLocaleString()}
                     </small>
                   </div>
 
@@ -413,7 +437,10 @@ function ProductsPageContent() {
                           </span>
                           {product.originalPriceCents && (
                             <span className="text-muted text-decoration-line-through small">
-                              ₹{(product.originalPriceCents / 100).toLocaleString()}
+                              ₹
+                              {(
+                                product.originalPriceCents / 100
+                              ).toLocaleString()}
                             </span>
                           )}
                         </div>

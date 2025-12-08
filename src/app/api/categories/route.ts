@@ -53,8 +53,15 @@ export async function PUT(request: NextRequest) {
     const body = await request.json();
     const { id, ...updateData } = body;
 
+    if (!id) {
+      return NextResponse.json(
+        { success: false, error: "Category ID is required" },
+        { status: 400 },
+      );
+    }
+
     const category = await prisma.category.update({
-      where: { id: parseInt(id) },
+      where: { id: Number(id) },
       data: updateData,
     });
 
@@ -70,6 +77,7 @@ export async function PUT(request: NextRequest) {
     );
   }
 }
+
 
 export async function DELETE(request: NextRequest) {
   try {
