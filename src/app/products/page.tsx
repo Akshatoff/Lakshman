@@ -48,12 +48,12 @@ const categories = [
   { id: "football", name: "Football", image: "/images/category-football.jpg" },
   { id: "basket", name: "Basketball", image: "/images/category-waskat.jpg" },
   {
-    id: "sports",
+    id: "sports-shoes",
     name: "Sports Shoes",
     image: "/images/category-sports-shoes.jpg",
   },
   {
-    id: "casual",
+    id: "casual-shoes",
     name: "Casual Shoes",
     image: "/images/category-casual-shoes.jpg",
   },
