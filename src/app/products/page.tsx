@@ -31,43 +31,61 @@ interface Product {
 interface Category {
   id: string;
   name: string;
-  image: string;
+  image?: string;
+  parent?: string;
 }
 
-const categories = [
-  { id: "all", name: "All Products", image: "/images/category-all.jpg" },
-  { id: "men", name: "Men's Clothing", image: "/images/category-men.jpg" },
-  {
-    id: "women",
-    name: "Women's Clothing",
-    image: "/images/category-women.jpg",
-  },
-  { id: "kids", name: "Kids Clothing", image: "/images/category-kids.jpg" },
-  { id: "running", name: "Running", image: "/images/category-running.jpg" },
-  { id: "cricket", name: "Cricket", image: "/images/category-cricket.jpg" },
-  { id: "football", name: "Football", image: "/images/category-football.jpg" },
-  { id: "basket", name: "Basketball", image: "/images/category-waskat.jpg" },
-  {
-    id: "sports-shoes",
-    name: "Sports Shoes",
-    image: "/images/category-sports-shoes.jpg",
-  },
-  {
-    id: "casual-shoes",
-    name: "Casual Shoes",
-    image: "/images/category-casual-shoes.jpg",
-  },
-  { id: "cricket-bat", name: "Bats", image: "/images/category-bat.jpg" },
-  { id: "cricket-ball", name: "Balls", image: "/images/category-ball.jpg" },
-  { id: "gloves", name: "Gloves", image: "/images/category-gloves.jpg" },
-  { id: "backpack", name: "Backpacks", image: "/images/category-backpack.jpg" },
-  { id: "home", name: "Home Furniture", image: "/images/category-home.jpg" },
-  {
-    id: "office",
-    name: "Office Furniture",
-    image: "/images/category-office.jpg",
-  },
-];
+// Organized category structure with parent-child relationships
+const categoryStructure: Record<string, Category[]> = {
+  Clothing: [
+    { id: "men-tshirts", name: "Men's T-Shirts", parent: "men" },
+    { id: "men-pants", name: "Men's Pants", parent: "men" },
+    { id: "men-shirts", name: "Men's Shirts", parent: "men" },
+    { id: "men-jackets", name: "Men's Jackets", parent: "men" },
+    { id: "women-tshirts", name: "Women's T-Shirts", parent: "women" },
+    { id: "women-pants", name: "Women's Pants", parent: "women" },
+    { id: "women-dresses", name: "Women's Dresses", parent: "women" },
+    { id: "women-skirts", name: "Women's Skirts", parent: "women" },
+    { id: "kids-tshirts", name: "Kids' T-Shirts", parent: "kids" },
+    { id: "kids-pants", name: "Kids' Pants", parent: "kids" },
+    { id: "kids-dresses", name: "Kids' Dresses", parent: "kids" },
+    { id: "kids-sets", name: "Kids' Sets", parent: "kids" },
+  ],
+  Sportswear: [
+    { id: "running", name: "Running" },
+    { id: "cricket", name: "Cricket" },
+    { id: "football", name: "Football" },
+    { id: "basketball", name: "Basketball" },
+  ],
+  Footwear: [
+    { id: "sports-shoes", name: "Sports Shoes" },
+    { id: "casual-shoes", name: "Casual Shoes" },
+  ],
+  Accessories: [
+    { id: "cricket-bat", name: "Cricket Bats" },
+    { id: "cricket-ball", name: "Cricket Balls" },
+    { id: "gloves", name: "Gloves" },
+    { id: "backpack", name: "Backpacks" },
+  ],
+  Furniture: [
+    { id: "home-chairs", name: "Home Chairs", parent: "home" },
+    { id: "home-tables", name: "Home Tables", parent: "home" },
+    { id: "home-sofas", name: "Sofas", parent: "home" },
+    { id: "home-beds", name: "Beds", parent: "home" },
+    { id: "home-storage", name: "Home Storage", parent: "home" },
+    { id: "office-chairs", name: "Office Chairs", parent: "office" },
+    { id: "office-desks", name: "Office Desks", parent: "office" },
+    { id: "office-cabinets", name: "Office Cabinets", parent: "office" },
+    { id: "office-tables", name: "Conference Tables", parent: "office" },
+    { id: "office-storage", name: "Office Storage", parent: "office" },
+  ],
+};
+
+// Flatten all categories for easy access
+const allCategories = Object.entries(categoryStructure).flatMap(
+  ([parent, children]) =>
+    children.map((cat) => ({ ...cat, mainCategory: parent })),
+);
 
 function ProductsPageContent() {
   const searchParams = useSearchParams();
@@ -81,12 +99,26 @@ function ProductsPageContent() {
   const [quantities, setQuantities] = useState<{ [key: number]: number }>({});
   const { addToCart } = useCart();
 
+  // Get current category info
+  const currentCategory = allCategories.find((c) => c.id === category);
+  const breadcrumbItems = currentCategory
+    ? [
+        { name: "Home", href: "/" },
+        { name: "Products", href: "/products" },
+        { name: currentCategory.mainCategory, href: "#" },
+        { name: currentCategory.name, href: "#" },
+      ]
+    : [
+        { name: "Home", href: "/" },
+        { name: "Products", href: "/products" },
+      ];
+
   // Load products
   useEffect(() => {
     async function loadProducts() {
       try {
         setLoading(true);
-        const response = await fetch("/api/products?limit=100");
+        const response = await fetch("/api/products?limit=1000");
         const result = await response.json();
 
         if (result.success) {
@@ -162,7 +194,10 @@ function ProductsPageContent() {
     setQuantities((prev) => ({ ...prev, [productId]: 1 }));
   };
 
-  const currentCategory = categories.find((c) => c.id === category);
+  // Get related categories for sidebar
+  const relatedCategories = currentCategory
+    ? categoryStructure[currentCategory.mainCategory] || []
+    : [];
 
   if (loading) {
     return (
@@ -190,17 +225,21 @@ function ProductsPageContent() {
         <div className="container">
           <nav aria-label="breadcrumb">
             <ol className="breadcrumb mb-0">
-              <li className="breadcrumb-item">
-                <Link href="/">Home</Link>
-              </li>
-              <li className="breadcrumb-item">
-                <Link href="/products">Products</Link>
-              </li>
-              {category !== "all" && (
-                <li className="breadcrumb-item active" aria-current="page">
-                  {currentCategory?.name}
+              {breadcrumbItems.map((item, index) => (
+                <li
+                  key={index}
+                  className={`breadcrumb-item ${index === breadcrumbItems.length - 1 ? "active" : ""}`}
+                  aria-current={
+                    index === breadcrumbItems.length - 1 ? "page" : undefined
+                  }
+                >
+                  {index === breadcrumbItems.length - 1 ? (
+                    item.name
+                  ) : (
+                    <Link href={item.href}>{item.name}</Link>
+                  )}
                 </li>
-              )}
+              ))}
             </ol>
           </nav>
         </div>
@@ -217,6 +256,7 @@ function ProductsPageContent() {
               <p className="lead text-muted">
                 Showing {filteredProducts.length} product
                 {filteredProducts.length !== 1 ? "s" : ""}
+                {currentCategory && ` in ${currentCategory.mainCategory}`}
               </p>
             </div>
             <div className="col-lg-4">
@@ -240,23 +280,33 @@ function ProductsPageContent() {
       </section>
 
       {/* Category Filter Chips */}
-      <section className="py-3 bg-light border-top border-bottom">
-        <div className="container">
-          <div className="d-flex gap-2 flex-wrap overflow-auto">
-            {categories.map((cat) => (
+      {currentCategory && relatedCategories.length > 0 && (
+        <section className="py-3 bg-light border-top border-bottom">
+          <div className="container">
+            <div className="d-flex gap-2 flex-wrap overflow-auto">
               <Link
-                key={cat.id}
-                href={`/products?category=${cat.id}`}
-                className={`btn ${
-                  category === cat.id ? "btn-primary" : "btn-outline-secondary"
-                } btn-sm text-nowrap`}
+                href="/products"
+                className="btn btn-outline-secondary btn-sm text-nowrap"
               >
-                {cat.name}
+                All Products
               </Link>
-            ))}
+              {relatedCategories.map((cat) => (
+                <Link
+                  key={cat.id}
+                  href={`/products?category=${cat.id}`}
+                  className={`btn ${
+                    category === cat.id
+                      ? "btn-primary"
+                      : "btn-outline-secondary"
+                  } btn-sm text-nowrap`}
+                >
+                  {cat.name}
+                </Link>
+              ))}
+            </div>
           </div>
-        </div>
-      </section>
+        </section>
+      )}
 
       {/* Products Section */}
       <section className="py-5">
@@ -264,9 +314,39 @@ function ProductsPageContent() {
           <div className="row">
             {/* Sidebar Filters */}
             <div className="col-lg-3 mb-4">
-              <div className="card shadow-sm">
+              <div
+                className="card shadow-sm sticky-top"
+                style={{ top: "20px" }}
+              >
                 <div className="card-body">
                   <h5 className="fw-bold mb-4">Filters</h5>
+
+                  {/* Category Quick Links */}
+                  {!currentCategory && (
+                    <div className="mb-4">
+                      <h6 className="fw-semibold mb-3">Categories</h6>
+                      <div className="list-group list-group-flush">
+                        {Object.entries(categoryStructure).map(
+                          ([parent, children]) => (
+                            <div key={parent} className="mb-3">
+                              <div className="fw-semibold text-muted small mb-2">
+                                {parent}
+                              </div>
+                              {children.slice(0, 3).map((cat) => (
+                                <Link
+                                  key={cat.id}
+                                  href={`/products?category=${cat.id}`}
+                                  className="list-group-item list-group-item-action border-0 py-1 px-2 small"
+                                >
+                                  {cat.name}
+                                </Link>
+                              ))}
+                            </div>
+                          ),
+                        )}
+                      </div>
+                    </div>
+                  )}
 
                   {/* Price Range */}
                   <div className="mb-4">
@@ -421,7 +501,8 @@ function ProductsPageContent() {
                         </Link>
 
                         <span className="qty text-capitalize">
-                          {product.category.replace("-", " ")}
+                          {allCategories.find((c) => c.id === product.category)
+                            ?.name || product.category}
                         </span>
 
                         <div className="rating">
