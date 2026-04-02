@@ -5,262 +5,268 @@ import Link from "next/link";
 import Image from "next/image";
 
 const Footer: React.FC = () => {
+  const year = new Date().getFullYear();
+
   return (
-    <footer className="py-5 bg-dark text-white">
-      <div className="container-fluid">
-        <div className="row">
-          {/* Company Info */}
-          <div className="col-lg-3 col-md-6 mb-4">
-            <div className="footer-widget">
-              <div className="main-logo mb-4">
-                <Link href="/">
-                  <Image
-                    src="/images/logowhite.png"
-                    alt="Laksh-man Logo"
-                    width={150}
-                    height={50}
-                    className="img-fluid"
-                  />
-                </Link>
-              </div>
-              <p className="text-light">
-                Your trusted partner for premium clothes and outfits. We provide
-                quality clothes that elevate your look be it a party or be it
-                casuals day outs.
-              </p>
-              <div className="social-links d-flex gap-3 mt-3">
-                <Link href="#" className="text-white">
-                  <svg
-                    width="24"
-                    height="24"
-                    fill="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path d="M24 4.557c-.883.392-1.832.656-2.828.775 1.017-.609 1.798-1.574 2.165-2.724-.951.564-2.005.974-3.127 1.195-.897-.957-2.178-1.555-3.594-1.555-3.179 0-5.515 2.966-4.797 6.045-4.091-.205-7.719-2.165-10.148-5.144-1.29 2.213-.669 5.108 1.523 6.574-.806-.026-1.566-.247-2.229-.616-.054 2.281 1.581 4.415 3.949 4.89-.693.188-1.452.232-2.224.084.626 1.956 2.444 3.379 4.6 3.419-2.07 1.623-4.678 2.348-7.29 2.04 2.179 1.397 4.768 2.212 7.548 2.212 9.142 0 14.307-7.721 13.995-14.646.962-.695 1.797-1.562 2.457-2.549z" />
+    <footer style={{
+      background: "var(--charcoal)",
+      color: "var(--muted-light)",
+      borderTop: "1px solid rgba(255,255,255,0.06)",
+    }}>
+      {/* Main footer grid */}
+      <div className="container-fluid" style={{ padding: "5rem 2rem 3rem" }}>
+        <div className="row" style={{ gap: "0", rowGap: "3rem" }}>
+
+          {/* Brand column */}
+          <div className="col-lg-4 col-md-6">
+            <Link href="/" style={{ display: "inline-block", marginBottom: "1.5rem" }}>
+              <Image
+                src="/images/logo.png"
+                alt="Laksh-man"
+                width={130}
+                height={34}
+                style={{
+                  height: "30px", width: "auto",
+                  filter: "brightness(0) invert(1)",
+                  opacity: 0.9,
+                }}
+              />
+            </Link>
+            <p style={{
+              fontSize: "0.875rem",
+              lineHeight: 1.8,
+              color: "var(--muted-light)",
+              maxWidth: 300,
+              marginBottom: "1.75rem",
+            }}>
+              Premium textiles and outfits crafted in Muzaffarpur, Bihar. Quality that speaks, style that endures.
+            </p>
+
+            {/* Social links */}
+            <div style={{ display: "flex", gap: "0.6rem" }}>
+              {[
+                { label: "Twitter", path: "M23 3a10.9 10.9 0 01-3.14 1.53A4.48 4.48 0 0012 8v1A10.66 10.66 0 013 4s-4 9 5 13a11.64 11.64 0 01-7 2c9 5 20 0 20-11.5a4.5 4.5 0 00-.08-.83A7.72 7.72 0 0023 3z" },
+                { label: "Instagram", path: "M16 11.37A4 4 0 1112.63 8 4 4 0 0116 11.37zM17.5 6.5h.01M6.5 2h11a4.5 4.5 0 014.5 4.5v11a4.5 4.5 0 01-4.5 4.5h-11A4.5 4.5 0 012 17.5v-11A4.5 4.5 0 016.5 2z" },
+                { label: "Facebook", path: "M18 2h-3a5 5 0 00-5 5v3H7v4h3v8h4v-8h3l1-4h-4V7a1 1 0 011-1h3z" },
+              ].map(({ label, path }) => (
+                <a
+                  key={label}
+                  href="#"
+                  aria-label={label}
+                  style={{
+                    width: 34, height: 34,
+                    borderRadius: "50%",
+                    border: "1px solid rgba(255,255,255,0.12)",
+                    display: "flex", alignItems: "center", justifyContent: "center",
+                    color: "var(--muted-light)",
+                    transition: "all 0.25s",
+                  }}
+                  onMouseEnter={e => {
+                    const el = e.currentTarget as HTMLAnchorElement;
+                    el.style.background = "var(--amber)";
+                    el.style.borderColor = "var(--amber)";
+                    el.style.color = "white";
+                  }}
+                  onMouseLeave={e => {
+                    const el = e.currentTarget as HTMLAnchorElement;
+                    el.style.background = "none";
+                    el.style.borderColor = "rgba(255,255,255,0.12)";
+                    el.style.color = "var(--muted-light)";
+                  }}
+                >
+                  <svg width="14" height="14" fill="none" stroke="currentColor" strokeWidth="2" strokeLinecap="round" strokeLinejoin="round">
+                    <path d={path} />
                   </svg>
-                </Link>
-                <Link href="#" className="text-white">
-                  <svg
-                    width="24"
-                    height="24"
-                    fill="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path d="M22.46 6c-.77.35-1.6.58-2.46.69.88-.53 1.56-1.37 1.88-2.38-.83.5-1.75.85-2.72 1.05C18.37 4.5 17.26 4 16 4c-2.35 0-4.27 1.92-4.27 4.29 0 .34.04.67.11.98C8.28 9.09 5.11 7.38 3 4.79c-.37.63-.58 1.37-.58 2.15 0 1.49.75 2.81 1.91 3.56-.71 0-1.37-.2-1.95-.5v.03c0 2.08 1.48 3.82 3.44 4.21a4.22 4.22 0 0 1-1.93.07 4.28 4.28 0 0 0 4 2.98 8.521 8.521 0 0 1-5.33 1.84c-.34 0-.68-.02-1.02-.06C3.44 20.29 5.7 21 8.12 21 16 21 20.33 14.46 20.33 8.79c0-.19 0-.37-.01-.56.84-.6 1.56-1.36 2.14-2.23z" />
-                  </svg>
-                </Link>
-                <Link href="#" className="text-white">
-                  <svg
-                    width="24"
-                    height="24"
-                    fill="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path d="M12.017 0C5.396 0 .029 5.367.029 11.987c0 5.079 3.158 9.417 7.618 11.174-.105-.949-.199-2.403.042-3.441.219-.937 1.407-5.965 1.407-5.965s-.359-.719-.359-1.782c0-1.668.967-2.914 2.171-2.914 1.023 0 1.518.769 1.518 1.690 0 1.029-.655 2.568-.994 3.995-.283 1.194.599 2.169 1.777 2.169 2.133 0 3.772-2.249 3.772-5.495 0-2.873-2.064-4.882-5.012-4.882-3.414 0-5.418 2.561-5.418 5.207 0 1.031.397 2.138.893 2.738a.36.36 0 0 1 .083.345l-.333 1.36c-.053.22-.174.267-.402.161-1.499-.698-2.436-2.889-2.436-4.649 0-3.785 2.75-7.262 7.929-7.262 4.163 0 7.398 2.967 7.398 6.931 0 4.136-2.607 7.464-6.227 7.464-1.216 0-2.357-.631-2.75-1.378l-.748 2.853c-.271 1.043-1.002 2.35-1.492 3.146C9.57 23.812 10.763 24.009 12.017 24.009c6.624 0 11.99-5.367 11.99-11.988C24.007 5.367 18.641.001.012.001z.012 0z" />
-                  </svg>
-                </Link>
-                <Link href="#" className="text-white">
-                  <svg
-                    width="24"
-                    height="24"
-                    fill="currentColor"
-                    viewBox="0 0 24 24"
-                  >
-                    <path d="M12 2.163c3.204 0 3.584.012 4.85.07 3.252.148 4.771 1.691 4.919 4.919.058 1.265.069 1.645.069 4.849 0 3.205-.012 3.584-.069 4.849-.149 3.225-1.664 4.771-4.919 4.919-1.266.058-1.644.07-4.85.07-3.204 0-3.584-.012-4.849-.07-3.26-.149-4.771-1.699-4.919-4.92-.058-1.265-.07-1.644-.07-4.849 0-3.204.013-3.583.07-4.849.149-3.227 1.664-4.771 4.919-4.919 1.266-.057 1.645-.069 4.849-.069zm0-2.163c-3.259 0-3.667.014-4.947.072-4.358.2-6.78 2.618-6.98 6.98-.059 1.281-.073 1.689-.073 4.948 0 3.259.014 3.668.072 4.948.2 4.358 2.618 6.78 6.98 6.98 1.281.058 1.689.072 4.948.072 3.259 0 3.668-.014 4.948-.072 4.354-.2 6.782-2.618 6.979-6.98.059-1.28.073-1.689.073-4.948 0-3.259-.014-3.667-.072-4.947-.196-4.354-2.617-6.78-6.979-6.98-1.281-.059-1.69-.073-4.949-.073zm0 5.838c-3.403 0-6.162 2.759-6.162 6.162s2.759 6.163 6.162 6.163 6.162-2.759 6.162-6.163c0-3.403-2.759-6.162-6.162-6.162zm0 10.162c-2.209 0-4-1.79-4-4 0-2.209 1.791-4 4-4s4 1.791 4 4c0 2.21-1.791 4-4 4zm6.406-11.845c-.796 0-1.441.645-1.441 1.44s.645 1.44 1.441 1.44c.795 0 1.439-.645 1.439-1.44s-.644-1.44-1.439-1.44z" />
-                  </svg>
-                </Link>
-              </div>
+                </a>
+              ))}
             </div>
           </div>
 
-          {/* Quick Links */}
-          <div className="col-lg-2 col-md-6 mb-4">
-            <div className="footer-widget">
-              <h5 className="widget-title text-white mb-3">Quick Links</h5>
-              <ul className="list-unstyled">
-                <li className="mb-2">
-                  <Link href="/" className="text-light text-decoration-none">
-                    Home
-                  </Link>
-                </li>
-                <li className="mb-2">
-                  <Link
-                    href="/products"
-                    className="text-light text-decoration-none"
-                  >
-                    Products
-                  </Link>
-                </li>
-                <li className="mb-2">
-                  <Link
-                    href="/categories"
-                    className="text-light text-decoration-none"
-                  >
-                    Categories
-                  </Link>
-                </li>
-                <li className="mb-2">
-                  <Link
-                    href="/about"
-                    className="text-light text-decoration-none"
-                  >
-                    About Us
-                  </Link>
-                </li>
-                <li className="mb-2">
-                  <Link
-                    href="/contact"
-                    className="text-light text-decoration-none"
-                  >
-                    Contact
-                  </Link>
-                </li>
-              </ul>
-            </div>
+          {/* Shop links */}
+          <div className="col-lg-2 col-md-6 col-6">
+            <h6 style={{
+              fontFamily: "var(--font-body)",
+              fontSize: "0.7rem",
+              fontWeight: 700,
+              letterSpacing: "0.18em",
+              textTransform: "uppercase",
+              color: "rgba(255,255,255,0.9)",
+              marginBottom: "1.25rem",
+            }}>
+              Shop
+            </h6>
+            <nav style={{ display: "flex", flexDirection: "column", gap: "0.6rem" }}>
+              {[
+                { label: "Men's Clothing", href: "/products?category=men-tshirts" },
+                { label: "Women's Clothing", href: "/products?category=women-tshirts" },
+                { label: "Kids Collection", href: "/products?category=kids-tshirts" },
+                { label: "Sportswear", href: "/products?category=running" },
+                { label: "Footwear", href: "/products?category=sports-shoes" },
+                { label: "Furniture", href: "/products?category=home-chairs" },
+              ].map(({ label, href }) => (
+                <Link
+                  key={label}
+                  href={href}
+                  style={{
+                    fontSize: "0.875rem",
+                    color: "var(--muted-light)",
+                    transition: "color 0.2s",
+                  }}
+                  onMouseEnter={e => ((e.currentTarget as HTMLAnchorElement).style.color = "var(--amber)")}
+                  onMouseLeave={e => ((e.currentTarget as HTMLAnchorElement).style.color = "var(--muted-light)")}
+                >
+                  {label}
+                </Link>
+              ))}
+            </nav>
           </div>
 
-          {/* Customer Service */}
-          <div className="col-lg-2 col-md-6 mb-4">
-            <div className="footer-widget">
-              <h5 className="widget-title text-white mb-3">Customer Service</h5>
-              <ul className="list-unstyled">
-                <li className="mb-2">
-                  <Link
-                    href="/help"
-                    className="text-light text-decoration-none"
-                  >
-                    Help Center
-                  </Link>
-                </li>
-                <li className="mb-2">
-                  <Link
-                    href="/returns"
-                    className="text-light text-decoration-none"
-                  >
-                    Returns & Exchanges
-                  </Link>
-                </li>
-                <li className="mb-2">
-                  <Link
-                    href="/shipping"
-                    className="text-light text-decoration-none"
-                  >
-                    Shipping Info
-                  </Link>
-                </li>
-                <li className="mb-2">
-                  <Link
-                    href="/warranty"
-                    className="text-light text-decoration-none"
-                  >
-                    Warranty
-                  </Link>
-                </li>
-                <li className="mb-2">
-                  <Link
-                    href="/track-order"
-                    className="text-light text-decoration-none"
-                  >
-                    Track Your Order
-                  </Link>
-                </li>
-              </ul>
-            </div>
+          {/* Company links */}
+          <div className="col-lg-2 col-md-6 col-6">
+            <h6 style={{
+              fontFamily: "var(--font-body)",
+              fontSize: "0.7rem",
+              fontWeight: 700,
+              letterSpacing: "0.18em",
+              textTransform: "uppercase",
+              color: "rgba(255,255,255,0.9)",
+              marginBottom: "1.25rem",
+            }}>
+              Company
+            </h6>
+            <nav style={{ display: "flex", flexDirection: "column", gap: "0.6rem" }}>
+              {[
+                { label: "About Us", href: "/about" },
+                { label: "Contact", href: "/contact" },
+                { label: "Help Center", href: "/help" },
+                { label: "Returns", href: "/returns" },
+                { label: "Track Order", href: "/track-order" },
+                { label: "Privacy Policy", href: "/privacy-policy" },
+              ].map(({ label, href }) => (
+                <Link
+                  key={label}
+                  href={href}
+                  style={{
+                    fontSize: "0.875rem",
+                    color: "var(--muted-light)",
+                    transition: "color 0.2s",
+                  }}
+                  onMouseEnter={e => ((e.currentTarget as HTMLAnchorElement).style.color = "var(--amber)")}
+                  onMouseLeave={e => ((e.currentTarget as HTMLAnchorElement).style.color = "var(--muted-light)")}
+                >
+                  {label}
+                </Link>
+              ))}
+            </nav>
           </div>
 
-          {/* Contact Info */}
-          <div className="col-lg-3 col-md-6 mb-4">
-            <div className="footer-widget">
-              <h5 className="widget-title text-white mb-3">Contact Info</h5>
-              <div className="contact-info">
-                <div className="d-flex align-items-start mb-3">
-                  <svg
-                    width="20"
-                    height="20"
-                    fill="currentColor"
-                    className="me-3 mt-1"
-                    viewBox="0 0 24 24"
-                  >
-                    <path d="M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z" />
-                  </svg>
-                  <div>
-                    <p className="text-light mb-0">
-                      Bela Industrial Area,
-                      <br />
-                      PH2, Muzaffarpur Bihar
-                    </p>
+          {/* Contact */}
+          <div className="col-lg-4 col-md-6">
+            <h6 style={{
+              fontFamily: "var(--font-body)",
+              fontSize: "0.7rem",
+              fontWeight: 700,
+              letterSpacing: "0.18em",
+              textTransform: "uppercase",
+              color: "rgba(255,255,255,0.9)",
+              marginBottom: "1.25rem",
+            }}>
+              Visit Us
+            </h6>
+
+            <div style={{ display: "flex", flexDirection: "column", gap: "1rem" }}>
+              {[
+                {
+                  icon: "M12 2C8.13 2 5 5.13 5 9c0 5.25 7 13 7 13s7-7.75 7-13c0-3.87-3.13-7-7-7zm0 9.5c-1.38 0-2.5-1.12-2.5-2.5s1.12-2.5 2.5-2.5 2.5 1.12 2.5 2.5-1.12 2.5-2.5 2.5z",
+                  text: "Bela Industrial Area, Phase 2\nMuzaffarpur, Bihar, India",
+                },
+                {
+                  icon: "M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z",
+                  text: "+91 95255 07352",
+                  href: "tel:+919525507352",
+                },
+                {
+                  icon: "M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z",
+                  text: "info@lakshmanindustries.com",
+                  href: "mailto:info@lakshmanindustries.com",
+                },
+              ].map(({ icon, text, href }, i) => (
+                <div key={i} style={{ display: "flex", gap: "0.75rem", alignItems: "flex-start" }}>
+                  <div style={{
+                    width: 32, height: 32, borderRadius: "50%",
+                    background: "rgba(200, 134, 42, 0.12)",
+                    display: "flex", alignItems: "center", justifyContent: "center",
+                    flexShrink: 0, marginTop: "0.1rem",
+                  }}>
+                    <svg width="14" height="14" fill="currentColor" style={{ color: "var(--amber)" }} viewBox="0 0 24 24">
+                      <path d={icon} />
+                    </svg>
+                  </div>
+                  <div style={{ fontSize: "0.85rem", lineHeight: 1.65, color: "var(--muted-light)" }}>
+                    {href ? (
+                      <a href={href} style={{ color: "var(--muted-light)", transition: "color 0.2s" }}
+                        onMouseEnter={e => ((e.currentTarget as HTMLAnchorElement).style.color = "var(--amber)")}
+                        onMouseLeave={e => ((e.currentTarget as HTMLAnchorElement).style.color = "var(--muted-light)")}
+                      >
+                        {text}
+                      </a>
+                    ) : text.split("\n").map((line, j) => <span key={j} style={{ display: "block" }}>{line}</span>)}
                   </div>
                 </div>
-                <div className="d-flex align-items-center mb-3">
-                  <svg
-                    width="20"
-                    height="20"
-                    fill="currentColor"
-                    className="me-3"
-                    viewBox="0 0 24 24"
-                  >
-                    <path d="M6.62 10.79c1.44 2.83 3.76 5.14 6.59 6.59l2.2-2.2c.27-.27.67-.36 1.02-.24 1.12.37 2.33.57 3.57.57.55 0 1 .45 1 1V20c0 .55-.45 1-1 1-9.39 0-17-7.61-17-17 0-.55.45-1 1-1h3.5c.55 0 1 .45 1 1 0 1.25.2 2.45.57 3.57.11.35.03.74-.25 1.02l-2.2 2.2z" />
-                  </svg>
-                  <p className="text-light mb-0">+91-9525507352</p>
-                </div>
-                <div className="d-flex align-items-center mb-3">
-                  <svg
-                    width="20"
-                    height="20"
-                    fill="currentColor"
-                    className="me-3"
-                    viewBox="0 0 24 24"
-                  >
-                    <path d="M20 4H4c-1.1 0-1.99.9-1.99 2L2 18c0 1.1.9 2 2 2h16c1.1 0 2-.9 2-2V6c0-1.1-.9-2-2-2zm0 4l-8 5-8-5V6l8 5 8-5v2z" />
-                  </svg>
-                  <p className="text-light mb-0">info@lakshman.com</p>
-                </div>
-                <div className="d-flex align-items-center">
-                  <svg
-                    width="20"
-                    height="20"
-                    fill="currentColor"
-                    className="me-3"
-                    viewBox="0 0 24 24"
-                  >
-                    <path d="M11.99 2C6.47 2 2 6.48 2 12s4.47 10 9.99 10C17.52 22 22 17.52 22 12S17.52 2 11.99 2zM12 20c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8z" />
-                    <path d="M12.5 7H11v6l5.25 3.15.75-1.23-4.5-2.67z" />
-                  </svg>
-                  <p className="text-light mb-0">
-                    Mon - Sat: 9:00 AM - 8:00 PM
-                  </p>
-                </div>
+              ))}
+
+              <div style={{
+                marginTop: "0.5rem",
+                padding: "0.75rem 1rem",
+                background: "rgba(200, 134, 42, 0.08)",
+                border: "1px solid rgba(200, 134, 42, 0.2)",
+                borderRadius: 3,
+              }}>
+                <p style={{ fontSize: "0.78rem", color: "rgba(255,255,255,0.6)", margin: 0, lineHeight: 1.6 }}>
+                  Mon – Sat: 9:00 AM – 7:00 PM<br />Sunday: Closed
+                </p>
               </div>
             </div>
           </div>
-        </div>
 
-        {/* Bottom Footer */}
-        <hr className="my-4" style={{ borderColor: "#555" }} />
-        <div className="row align-items-center">
-          <div className="col-md-6">
-            <p className="text-light mb-0">
-              © {new Date().getFullYear()} Laksh-man Industries. All rights
-              reserved.
-            </p>
-          </div>
-          <div className="col-md-6">
-            <div className="footer-links d-flex justify-content-md-end gap-4">
-              <Link
-                href="/privacy-policy"
-                className="text-light text-decoration-none"
-              >
-                Privacy Policy
-              </Link>
-              <Link
-                href="/terms-conditions"
-                className="text-light text-decoration-none"
-              >
-                Terms & Conditions
-              </Link>
-              <Link href="/sitemap" className="text-light text-decoration-none">
-                Sitemap
-              </Link>
+        </div>
+      </div>
+
+      {/* Bottom bar */}
+      <div style={{
+        borderTop: "1px solid rgba(255,255,255,0.07)",
+        padding: "1.25rem 2rem",
+      }}>
+        <div className="container-fluid">
+          <div className="row align-items-center" style={{ gap: "0.75rem" }}>
+            <div className="col-md-6">
+              <p style={{ margin: 0, fontSize: "0.78rem", color: "rgba(255,255,255,0.35)" }}>
+                © {year} Lakshman Industries. All rights reserved.
+              </p>
+            </div>
+            <div className="col-md-6">
+              <div style={{ display: "flex", gap: "1.5rem", justifyContent: "flex-end", flexWrap: "wrap" }}>
+                {[
+                  { label: "Privacy Policy", href: "/privacy-policy" },
+                  { label: "Terms & Conditions", href: "/terms-conditions" },
+                  { label: "Sitemap", href: "/sitemap" },
+                ].map(({ label, href }) => (
+                  <Link
+                    key={label}
+                    href={href}
+                    style={{
+                      fontSize: "0.75rem",
+                      color: "rgba(255,255,255,0.35)",
+                      letterSpacing: "0.05em",
+                      transition: "color 0.2s",
+                    }}
+                    onMouseEnter={e => ((e.currentTarget as HTMLAnchorElement).style.color = "var(--amber)")}
+                    onMouseLeave={e => ((e.currentTarget as HTMLAnchorElement).style.color = "rgba(255,255,255,0.35)")}
+                  >
+                    {label}
+                  </Link>
+                ))}
+              </div>
             </div>
           </div>
         </div>
