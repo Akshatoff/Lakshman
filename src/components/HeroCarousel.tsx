@@ -18,7 +18,7 @@ interface Slide {
 const slides: Slide[] = [
   {
     id: 1,
-    backgroundImage: "/images/background-pattern.jpg",
+    backgroundImage: "/images/bg.jpeg",
     tag: "New Season",
     title: "Men's Premium",
     titleItalic: "Fleece Collection",
