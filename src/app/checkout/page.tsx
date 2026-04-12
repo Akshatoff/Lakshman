@@ -24,9 +24,8 @@ interface Address {
 const CheckoutPage: React.FC = () => {
   const router = useRouter();
   const { items, totalCents, clearCart } = useCart();
-  const { user } = useAuth();
+  const { user, loading: authLoading } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
-  const [activeStep, setActiveStep] = useState(1);
 
   // Address states
   const [savedAddresses, setSavedAddresses] = useState<Address[]>([]);
@@ -44,19 +43,23 @@ const CheckoutPage: React.FC = () => {
     country: "India",
   });
 
-  // Redirect if not logged in or cart is empty
   useEffect(() => {
+    // Wait for auth to resolve before redirecting
+    if (authLoading) return;
+
     if (!user) {
-      router.push("/auth/login?redirectTo=/checkout");
+      // Guest: redirect to login, comeback to checkout after
+      router.replace("/auth/login?redirectTo=/checkout");
       return;
     }
+
     if (items.length === 0) {
-      router.push("/");
+      router.replace("/");
       return;
     }
 
     fetchAddresses();
-  }, [user, items, router]);
+  }, [user, authLoading, items.length, router]);
 
   const fetchAddresses = async () => {
     try {
@@ -64,11 +67,8 @@ const CheckoutPage: React.FC = () => {
       if (response.ok) {
         const data = await response.json();
         setSavedAddresses(data.addresses || []);
-
         const defaultAddress = data.addresses?.find((addr: Address) => addr.isDefault);
-        if (defaultAddress) {
-          setSelectedAddressId(defaultAddress.id);
-        }
+        if (defaultAddress) setSelectedAddressId(defaultAddress.id);
       }
     } catch (error) {
       console.error("Error fetching addresses:", error);
@@ -91,7 +91,6 @@ const CheckoutPage: React.FC = () => {
         setSavedAddresses([...savedAddresses, data.address]);
         setSelectedAddressId(data.address.id);
         setShowNewAddressForm(false);
-
         setFormData({
           fullName: "",
           phone: "",
@@ -157,8 +156,6 @@ const CheckoutPage: React.FC = () => {
       }
 
       const { order } = await response.json();
-
-      // Clear cart and redirect to success page
       await clearCart();
       router.push(`/orders/${order.id}?success=true`);
     } catch (error: any) {
@@ -169,9 +166,23 @@ const CheckoutPage: React.FC = () => {
     }
   };
 
-  if (!user || items.length === 0) {
-    return null;
+  // Show loading while auth resolves or while redirecting guest
+  if (authLoading || !user) {
+    return (
+      <>
+        <Header />
+        <div className="container py-5 text-center" style={{ minHeight: "60vh" }}>
+          <div className="spinner-border text-primary" role="status">
+            <span className="visually-hidden">Loading...</span>
+          </div>
+          <p className="text-muted mt-3">Redirecting to sign in…</p>
+        </div>
+        <Footer />
+      </>
+    );
   }
+
+  if (items.length === 0) return null;
 
   const subtotal = totalCents;
   const shipping = 0;
@@ -228,7 +239,6 @@ const CheckoutPage: React.FC = () => {
                           </div>
                         </div>
                       ))}
-
                       <button
                         type="button"
                         className="btn btn-outline-primary mb-3"
@@ -248,9 +258,7 @@ const CheckoutPage: React.FC = () => {
                               className="form-control"
                               placeholder="Full Name *"
                               value={formData.fullName}
-                              onChange={(e) =>
-                                setFormData({ ...formData, fullName: e.target.value })
-                              }
+                              onChange={(e) => setFormData({ ...formData, fullName: e.target.value })}
                               required
                             />
                           </div>
@@ -260,9 +268,7 @@ const CheckoutPage: React.FC = () => {
                               className="form-control"
                               placeholder="Phone Number *"
                               value={formData.phone}
-                              onChange={(e) =>
-                                setFormData({ ...formData, phone: e.target.value })
-                              }
+                              onChange={(e) => setFormData({ ...formData, phone: e.target.value })}
                               required
                             />
                           </div>
@@ -272,9 +278,7 @@ const CheckoutPage: React.FC = () => {
                               className="form-control"
                               placeholder="Address Line 1 *"
                               value={formData.addressLine1}
-                              onChange={(e) =>
-                                setFormData({ ...formData, addressLine1: e.target.value })
-                              }
+                              onChange={(e) => setFormData({ ...formData, addressLine1: e.target.value })}
                               required
                             />
                           </div>
@@ -284,9 +288,7 @@ const CheckoutPage: React.FC = () => {
                               className="form-control"
                               placeholder="Address Line 2 (Optional)"
                               value={formData.addressLine2}
-                              onChange={(e) =>
-                                setFormData({ ...formData, addressLine2: e.target.value })
-                              }
+                              onChange={(e) => setFormData({ ...formData, addressLine2: e.target.value })}
                             />
                           </div>
                           <div className="col-md-6">
@@ -295,9 +297,7 @@ const CheckoutPage: React.FC = () => {
                               className="form-control"
                               placeholder="City *"
                               value={formData.city}
-                              onChange={(e) =>
-                                setFormData({ ...formData, city: e.target.value })
-                              }
+                              onChange={(e) => setFormData({ ...formData, city: e.target.value })}
                               required
                             />
                           </div>
@@ -307,9 +307,7 @@ const CheckoutPage: React.FC = () => {
                               className="form-control"
                               placeholder="State *"
                               value={formData.state}
-                              onChange={(e) =>
-                                setFormData({ ...formData, state: e.target.value })
-                              }
+                              onChange={(e) => setFormData({ ...formData, state: e.target.value })}
                               required
                             />
                           </div>
@@ -319,9 +317,7 @@ const CheckoutPage: React.FC = () => {
                               className="form-control"
                               placeholder="PIN Code *"
                               value={formData.zipCode}
-                              onChange={(e) =>
-                                setFormData({ ...formData, zipCode: e.target.value })
-                              }
+                              onChange={(e) => setFormData({ ...formData, zipCode: e.target.value })}
                               required
                             />
                           </div>
@@ -349,7 +345,7 @@ const CheckoutPage: React.FC = () => {
                   )}
                 </div>
 
-                {/* Payment Method - Only COD */}
+                {/* Payment Method */}
                 <div className="mb-4">
                   <h3 className="mb-3">Payment Method</h3>
                   <div className="card">
@@ -394,7 +390,7 @@ const CheckoutPage: React.FC = () => {
                   {items.map((item) => (
                     <div key={item.id} className="d-flex justify-content-between mb-3">
                       <div className="flex-grow-1">
-                        <h6 className="mb-0">{item.product.title}</h6>
+                        <h6 className="mb-0">{item.product.name || item.product.title}</h6>
                         <small className="text-muted">Qty: {item.quantity}</small>
                       </div>
                       <span className="fw-semibold">
@@ -410,12 +406,10 @@ const CheckoutPage: React.FC = () => {
                   <span>Subtotal</span>
                   <span>₹{(subtotal / 100).toFixed(2)}</span>
                 </div>
-
                 <div className="d-flex justify-content-between mb-2">
                   <span>Shipping</span>
                   <span className="text-success">Free</span>
                 </div>
-
                 <div className="d-flex justify-content-between mb-2">
                   <span>Tax (GST 18%)</span>
                   <span>₹{(tax / 100).toFixed(2)}</span>

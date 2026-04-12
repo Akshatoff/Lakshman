@@ -1,62 +1,59 @@
-import { createServerClient } from "@supabase/ssr";
-import { cookies } from "next/headers";
-import { NextResponse } from "next/server";
+import { NextRequest, NextResponse } from "next/server";
 import { prisma } from "@/lib/db/prisma";
-import { Database } from "@/types/supabase";
 
-export async function DELETE(
-  request: Request,
-  { params }: { params: { productId: string } },
+// GET /api/products/[id] - Fetch a single product by ID
+export async function GET(
+  request: NextRequest,
+  { params }: { params: { id: string } }
 ) {
-  const cookieStore = await cookies();
-  const supabase = createServerClient<Database>(
-    process.env.NEXT_PUBLIC_SUPABASE_URL!,
-    process.env.NEXT_PUBLIC_SUPABASE_ANON_KEY!,
-    {
-      cookies: {
-        getAll() {
-          return cookieStore.getAll();
-        },
-        setAll(cookiesToSet) {
-          cookiesToSet.forEach(({ name, value, options }) => {
-            cookieStore.set(name, value, options);
-          });
-        },
-      },
-    },
-  );
-  const {
-    data: { user },
-  } = await supabase.auth.getUser();
-
-  if (!user) {
-    return NextResponse.json({ error: "Unauthorized" }, { status: 401 });
-  }
-
   try {
-    const cart = await prisma.cart.findUnique({
-      where: { userId: user.id },
-    });
+    const id = parseInt(params.id);
 
-    if (!cart) {
-      return NextResponse.json({ error: "Cart not found" }, { status: 404 });
+    if (isNaN(id)) {
+      return NextResponse.json(
+        { success: false, error: "Invalid product ID" },
+        { status: 400 }
+      );
     }
 
-    await prisma.cartItem.delete({
-      where: {
-        cartId_productId: {
-          cartId: cart.id,
-          productId: parseInt(params.productId),
-        },
+    const product = await prisma.product.findUnique({
+      where: { id },
+      select: {
+        id: true,
+        title: true,
+        name: true,
+        priceCents: true,
+        image: true,
+        inventory: true,
+        category: true,
       },
     });
 
-    return NextResponse.json({ success: true });
+    if (!product) {
+      return NextResponse.json(
+        { success: false, error: "Product not found" },
+        { status: 404 }
+      );
+    }
+
+    return NextResponse.json({
+      success: true,
+      data: {
+        id: product.id,
+        title: product.name || product.title,
+        name: product.name,
+        priceCents: product.priceCents,
+        price: product.priceCents / 100,
+        image: product.image,
+        category: product.category,
+        inventory: product.inventory,
+      },
+    });
   } catch (error) {
-    console.error("Error removing from cart:", error);
+    console.error("Error fetching product:", error);
     return NextResponse.json(
-      { error: "Internal server error" },
-      { status: 500 },
+      { success: false, error: "Failed to fetch product" },
+      { status: 500 }
     );
   }
 }
